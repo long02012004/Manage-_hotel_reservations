@@ -4,11 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignUp.module.scss";
 import { postSignUp } from "../../../services/AppService";
 import { toast } from "react-toastify";
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+  const [isPolicyChecked, setIsPolicyChecked] = useState(false);
   const navigate = useNavigate();
   const validateEmail = (email) => {
     return String(email)
@@ -17,33 +22,50 @@ const SignUp = () => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
-  // 🟢 Hàm xử lý submit form
-  const handleLogin = async (e) => {
-    const isValidEmail = validateEmail(email);
-    if (!isValidEmail) {
-      toast.error("Invalid email");
-      return;
-    }
+  const validatePhone = (phone) => {
+    return /^(0|\+84)[0-9]{9,10}$/.test(phone); // Regex cho số điện thoại VN
+  };
 
-    if (!password) {
-      toast.error("Invalid password");
+  // 🟢 Hàm xử lý submit form
+  const handleSignUp = async (e) => {
+    e.preventDefault(); // ⛔ chặn reload ngay từ đầu
+    const isValidEmail = validateEmail(email);
+    const isValidPhone = validatePhone(phone);
+
+    // 🟢 Validation
+    if (!email || !phone || !password) {
+      toast.error("Vui lòng nhập đầy đủ Email, Số điện thoại và Mật khẩu!");
       return;
     }
-    e.preventDefault(); // ⛔ chặn reload trang mặc định của form
+    if (!isValidEmail) {
+      toast.error("Email không hợp lệ");
+      return;
+    }
+    if (!isValidPhone) {
+      toast.error("Số điện thoại không hợp lệ");
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Mật khẩu xác nhận không khớp");
+      return;
+    }
+    if (!isPolicyChecked) {
+      toast.error("Vui lòng đồng ý với Điều khoản & Chính sách");
+      return;
+    }
 
     try {
-      let data = await postSignUp(email, password, "New User");
+      let data = await postSignUp(email, phone, password);
 
       if (data.data && data.data.EC === 0) {
         toast.success(data.data.EM);
-        navigate("/Login"); // 👉 điều hướng về trang LogIn khi login thành công
-        alert("Đăng nhập thành công: " + data.data.EM);
+        navigate("/login"); // Chuyển hướng đến trang login sau khi đăng ký thành công
       } else {
         toast.error(data.data.EM);
       }
     } catch (err) {
-      console.error("Login error:", err);
-      toast.error("Có lỗi xảy ra khi đăng nhập!");
+      console.error("Sign up error:", err);
+      toast.error("Có lỗi xảy ra khi đăng ký!");
     }
   };
 
@@ -93,22 +115,33 @@ const SignUp = () => {
             <div className={styles["sign-up__separator-line"]}></div>
           </div>
 
-          {/* 🟢 SỬA 1: thêm onSubmit={handleLogin} để chặn reload và gọi API */}
-          <form className={styles["sign-up__form"]} onSubmit={handleLogin}>
+          <form className={styles["sign-up__form"]} onSubmit={handleSignUp}>
             <label htmlFor="email" className={styles["sign-up__label"]}>
-              Email hoặc Số Điện Thoại
+              Email
             </label>
             <input
               id="email"
               className={styles["sign-up__input"]}
               type="text"
-              name="emailPhone"
-              placeholder="Nhập Email hoặc số điện thoại"
-              title="Vui lòng nhập email hoặc số điện thoại"
+              name="email"
+              placeholder="Nhập Email "
+              title="Vui lòng nhập email "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
+            <label htmlFor="phone" className={styles["sign-up__label"]}>
+              Số Điện Thoại
+            </label>
+            <input
+              id="phone"
+              className={styles["sign-up__input"]}
+              type="text"
+              name="phone"
+              placeholder="Nhập số điện thoại"
+              title="Vui lòng nhập số điện thoại"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
             <label htmlFor="password" className={styles["sign-up__label"]}>
               Mật khẩu
             </label>
@@ -116,16 +149,31 @@ const SignUp = () => {
               <input
                 id="password"
                 className={`${styles["sign-up__input"]} ${styles["sign-up__input--password"]}`}
-                type="password"
+                type={isShowPassword ? "text" : "password"}
                 name="password"
                 placeholder="Nhập mật khẩu"
                 title="Vui lòng nhập mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className={styles["sign-up__password-icon"]}>
+              {isShowPassword ? (
+                <span
+                  className={styles["sign-up__password-icon"]}
+                  onClick={() => setIsShowPassword(false)}
+                >
+                  <VscEye className={styles["icons-eye"]} />
+                </span>
+              ) : (
+                <span
+                  className={styles["sign-up__password-icon"]}
+                  onClick={() => setIsShowPassword(true)}
+                >
+                  <VscEyeClosed className={styles["icons-eye"]} />
+                </span>
+              )}
+              {/*   <div className={styles["sign-up__password-icon"]}>
                 <i className="fa-solid fa-eye-slash"></i>
-              </div>
+              </div> */}
             </div>
 
             <label
@@ -138,30 +186,47 @@ const SignUp = () => {
               <input
                 id="confirm-password"
                 className={`${styles["sign-up__input"]} ${styles["sign-up__input--password"]}`}
-                type="password"
+                type={isShowConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Nhập lại mật khẩu"
                 title="Xác nhận lại mật khẩu"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <div className={styles["sign-up__password-icon"]}>
+              {isShowConfirmPassword ? (
+                <span
+                  className={styles["sign-up__password-icon"]}
+                  onClick={() => setIsShowConfirmPassword(false)}
+                >
+                  <VscEye className={styles["icons-eye"]} />
+                </span>
+              ) : (
+                <span
+                  className={styles["sign-up__password-icon"]}
+                  onClick={() => setIsShowConfirmPassword(true)}
+                >
+                  <VscEyeClosed className={styles["icons-eye"]} />
+                </span>
+              )}
+              {/*  <div className={styles["sign-up__password-icon"]}>
                 <i className="fa-solid fa-eye-slash"></i>
-              </div>
+              </div> */}
             </div>
 
             <div className={styles["sign-up__checkbox"]}>
-              <input
-                id="terms"
-                className={styles["sign-up__checkbox-input"]}
-                type="checkbox"
-                name="terms"
-                title="Đồng ý với Điều khoản & Chính sách"
-              />
               <label
                 htmlFor="terms"
                 className={styles["sign-up__checkbox-label"]}
               >
-                Tôi đồng ý với <strong>Điều khoản & Chính sách</strong>
+                <input
+                  type="checkbox"
+                  checked={isPolicyChecked}
+                  onChange={(e) => setIsPolicyChecked(e.target.checked)}
+                />
               </label>
+              <span className={styles["sign-up__checkbox-text"]}>
+                Tôi đồng ý với <strong>Điều khoản & Chính sách</strong>
+              </span>
             </div>
 
             <button

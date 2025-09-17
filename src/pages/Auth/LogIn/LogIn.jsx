@@ -7,8 +7,9 @@ import { postLogin } from "../../../services/AppService";
 const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -16,28 +17,34 @@ const LogIn = () => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
+
   const handleSubmit = async (e) => {
-    // Xử lý đăng nhập ở đây (gọi API, kiểm tra, ...)
+    e.preventDefault(); // ✅ chặn reload mặc định
+
     const isValidEmail = validateEmail(email);
     if (!isValidEmail) {
-      toast.error("Invalid email");
+      toast.error("Email không hợp lệ");
       return;
     }
 
     if (!password) {
-      toast.error("Invalid password");
+      toast.error("Mật khẩu không hợp lệ");
       return;
     }
-    // Nếu thành công:
-    e.preventDefault(); // ⛔ chặn reload trang mặc định của form
 
-    let data = await postLogin(email, password);
-    if (data.data && data.data.EC === 0) {
-      toast.success(data.data.EM);
-      navigate("/");
-    }
-    if (data.data && data.data.EC !== 0) {
-      toast.error(data.data.EM);
+    try {
+      let data = await postLogin(email, password);
+      if (data.data && data.data.EC === 0) {
+        toast.success(data.data.EM);
+        navigate("/");
+      } else {
+        toast.error(data.data?.EM || "Login failed");
+      }
+    } catch (err) {
+      toast.error("Server error, please try again later");
+      console.error(err);
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -51,7 +58,6 @@ const LogIn = () => {
               id="email"
               type="email"
               required
-              title="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -62,17 +68,13 @@ const LogIn = () => {
               id="password"
               type="password"
               required
-              title="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <label htmlFor="password">Password</label>
           </div>
-          <button
-            className={styles["login-btn"]}
-            onClick={() => handleSubmit()}
-          >
-            Đăng Nhập
+          <button type="submit" className={styles["login-btn"] } disabled={isLoading}>
+            {isLoading ? "Loading..." : "Đăng nhập"}
           </button>
         </form>
         <div className={styles["forgot-password"]}>
