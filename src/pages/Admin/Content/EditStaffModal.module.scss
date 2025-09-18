@@ -1,0 +1,28 @@
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0fb3d4;
+  text-align: center;
+  width: 100%;
+}
+.modalFooterButton{
+  min-width: 100px;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #545656;
+  &:hover {
+    background-color: #0fb3d4;
+  }
+}
+.modalSaveButton {
+  min-width: 100px;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #a9d40f;
+  border: none;
+  &:hover {
+    background-color: #0fb3d4;
+  }
+}

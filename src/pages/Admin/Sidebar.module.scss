@@ -1,0 +1,125 @@
+.sidebar {
+  width: 220px;
+  background-color: #1e1e2f;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: width 0.3s;
+
+  &.collapsed {
+    width: 70px;
+
+    .label {
+      display: none;
+    }
+
+    .logo {
+      font-size: 1rem;
+    }
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    background-color: #161622;
+    .logoContainer {
+      width: 100%;
+      align-items: center;
+      gap: 0.5rem; // khoảng cách giữa logo và tên
+    }
+
+    .logoImg {
+      width: 100%;
+      height: 32px;
+      object-fit: contain;
+    }
+
+   .logoTextContainer{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+   }
+
+    .toggleBtn {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+
+      &:hover {
+        color: #f0a500;
+      }
+    }
+  }
+
+  .menu {
+    flex-grow: 1;
+    list-style: none;
+    padding: 0;
+
+    .menuItem {
+      margin: 0.5rem 0;
+
+      .menuLink {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background 0.2s, color 0.2s;
+
+        &:hover {
+          background-color: #f0a500;
+          color: #1e1e2f;
+        }
+
+        .icon {
+          font-size: 1.2rem;
+        }
+
+        .label {
+          margin-left: 0.75rem;
+        }
+      }
+
+      &.active .menuLink {
+        background-color: #f0a500;
+        color: #1e1e2f;
+      }
+    }
+  }
+
+  .footer {
+    padding: 1rem;
+    border-top: 1px solid #333;
+
+    .menuLink {
+      display: flex;
+      align-items: center;
+      color: #fff;
+      text-decoration: none;
+
+      &:hover {
+        color: #f0a500;
+      }
+
+      .icon {
+        font-size: 1.2rem;
+      }
+
+      .label {
+        margin-left: 0.75rem;
+      }
+    }
+  }
+}

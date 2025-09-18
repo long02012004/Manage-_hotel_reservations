@@ -1,15 +1,18 @@
 import axios from "../utils/AxiosCustomize.jsx";
-const postLogin = (userEmail, userPassword) => {
-  return axios.post(`/api/v1/login`, {
-    email: userEmail,
-    password: userPassword,
-  });
+
+// API đăng nhập
+const postLogin = (data) => {
+  return axios.post(`/api/v1/login`, data);
 };
-const postSignUp = (userEmail, userPhone, userPassword) => {
-  return axios.post(`/api/v1/register`, {
-    email: userEmail,
-    phone: userPhone,
-    password: userPassword,
-  });
+
+// API đăng ký
+const postSignUp = (data) => {
+  return axios.post(`/api/v1/register`, data);
 };
-export { postLogin, postSignUp };
+
+// API tìm phòng
+const postSearchRooms = (data) => {
+  return axios.post(`/api/v1/search`, data);
+};
+
+export { postLogin, postSignUp, postSearchRooms };

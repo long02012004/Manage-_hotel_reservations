@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./RoomSelection.module.scss";
 import { FaCheck } from "react-icons/fa";
 import RoomCard from "./RoomCard";
-import {
+/* import {
   hotel1,
   hotel2,
   hotel3,
@@ -12,10 +12,10 @@ import {
   hotel7,
   hotel8,
   hotel9,
-} from "../../../assets/images/img";
+} from "../../../assets/images/img"; */
 
-const RoomSelection = () => {
-  const roomsData = [
+const RoomSelection = ({ roomsData }) => {
+  /*   const roomsData = [
     {
       id: 1,
       image: hotel1,
@@ -205,14 +205,12 @@ const RoomSelection = () => {
         checkOutDetail: "Thứ Năm đến 12:00",
       },
     },
-  ];
+  ]; */
 
   return (
-    <div className={styles["room-wrapper"]}>
-      {/* Title */}
+    /*     <div className={styles["room-wrapper"]}>
       <h2 className={styles["section-title"]}>Chọn phòng</h2>
 
-      {/* Banner */}
       <div className={styles["promo-banner"]}>
         <div className={styles["promo-left"]}>
           <h3>ĐẶT PHÒNG Ở GIÁ TỐT NHẤT!</h3>
@@ -224,7 +222,6 @@ const RoomSelection = () => {
         </div>
       </div>
 
-      {/* Filter */}
       <div className={styles["filter-bar"]}>
         <button>
           <p>Tùy chọn giường</p> <FaCheck />
@@ -234,11 +231,21 @@ const RoomSelection = () => {
         </button>
       </div>
 
-      {/* Room List */}
       <div className={styles["room-list"]}>
         {roomsData.map((room, i) => (
           <RoomCard key={i} {...room} />
         ))}
+      </div>
+    </div> */
+    <div className={styles["room-wrapper"]}>
+      <h2 className={styles["section-title"]}>Chọn phòng</h2>
+
+      <div className={styles["room-list"]}>
+        {roomsData.length > 0 ? (
+          roomsData.map((room) => <RoomCard key={room.id} {...room} />)
+        ) : (
+          <p>Không có phòng nào phù hợp.</p>
+        )}
       </div>
     </div>
   );

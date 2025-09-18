@@ -25,6 +25,7 @@ const RoomCard = ({
   oldPrice,
   discount,
   booking,
+  amenities,
 }) => {
   return (
     <div className={styles["room-card"]}>
@@ -51,26 +52,36 @@ const RoomCard = ({
               <FaBed /> {bed}
             </span>
           ))}
-          <span>
-            <FaCity /> {view}
-          </span>
-          <span>
-            <FaSmokingBan /> Phòng không hút thuốc
-          </span>
-          <span>
-            <FaWind /> Máy sấy tóc
-          </span>
-          <span>
-            <TbAirConditioning /> Máy lạnh
-          </span>
-          <span>
-            <CiWifiOn /> Wifi miễn phí
-          </span>
-          <span>
-            {" "}
-            <FaDog />
-            Cho phép thú cưng
-          </span>
+          {view && (
+            <span>
+              <FaCity /> {view}
+            </span>
+          )}
+          {amenities.nonSmoking && (
+            <span>
+              <FaSmokingBan /> Phòng không hút thuốc
+            </span>
+          )}
+          {amenities.hairDryer && (
+            <span>
+              <FaWind /> Máy sấy tóc
+            </span>
+          )}
+          {amenities.airConditioning && (
+            <span>
+              <TbAirConditioning /> Máy lạnh
+            </span>
+          )}
+          {amenities.wifi && (
+            <span>
+              <CiWifiOn /> Wifi miễn phí
+            </span>
+          )}
+          {amenities.petsAllowed && (
+            <span>
+              <FaDog /> Cho phép thú cưng
+            </span>
+          )}
         </div>
 
         <p className={styles["address"]}>{address}</p>

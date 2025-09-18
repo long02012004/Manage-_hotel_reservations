@@ -33,7 +33,7 @@ const LogIn = () => {
     }
 
     try {
-      let data = await postLogin(email, password);
+      let data = await postLogin({ email, password });
       if (data.data && data.data.EC === 0) {
         toast.success(data.data.EM);
         navigate("/");
@@ -43,7 +43,7 @@ const LogIn = () => {
     } catch (err) {
       toast.error("Server error, please try again later");
       console.error(err);
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -73,7 +73,11 @@ const LogIn = () => {
             />
             <label htmlFor="password">Password</label>
           </div>
-          <button type="submit" className={styles["login-btn"] } disabled={isLoading}>
+          <button
+            type="submit"
+            className={styles["login-btn"]}
+            disabled={isLoading}
+          >
             {isLoading ? "Loading..." : "Đăng nhập"}
           </button>
         </form>

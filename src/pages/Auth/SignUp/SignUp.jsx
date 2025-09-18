@@ -55,7 +55,7 @@ const SignUp = () => {
     }
 
     try {
-      let data = await postSignUp(email, phone, password);
+      let data = await postSignUp({ email, phone, password });
 
       if (data.data && data.data.EC === 0) {
         toast.success(data.data.EM);
