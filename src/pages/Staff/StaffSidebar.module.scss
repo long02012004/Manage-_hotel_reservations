@@ -1,0 +1,52 @@
+.sidebar {
+  width: 220px;
+  background-color: #1f2937;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s;
+}
+
+.collapsed {
+  width: 60px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 12px 20px;
+  transition: background 0.2s;
+}
+
+.nav a:hover {
+  background-color: #334155;
+}
+
+.active {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.toggleBtn {
+  margin-top: auto;
+  margin-bottom: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.2rem;
+}

@@ -17,6 +17,14 @@ import AdminLayout from "./pages/Admin/AdminLayout.jsx";
 import Dashboard from "./pages/Admin/Content/Dashboard.jsx";
 import ManageStaff from "./pages/Admin/Content/ManageStaff.jsx";
 
+// Staff
+import StaffLayout from "./pages/Staff/StaffLayout.jsx";
+import ManageRooms from "./pages/Staff/Content/ManageRooms.jsx";
+import ManageReviews from "./pages/Staff/Content/ManageReviews.jsx";
+import ManageCustomers from "./pages/Staff/Content/ManageCustomers.jsx";
+import ManageContent from "./pages/Staff/Content/ManageContent.jsx";
+import ManagePrices from "./pages/Staff/Content/ManagePrices.jsx";
+
 // Toast
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,7 +35,7 @@ const Layout = () => {
       <Routes>
         {/* ================= User Routes ================= */}
         <Route path="/" element={<App />}>
-          <Route index element={<Home />} /> 
+          <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
           <Route path="offers" element={<Offers />} />
           <Route path="food" element={<Food />} />
@@ -41,6 +49,16 @@ const Layout = () => {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="manage-staff" element={<ManageStaff />} />
+        </Route>
+
+        {/* ================= Staff Routes ================= */}
+        <Route path="/staff" element={<StaffLayout />}>
+          <Route index element={<ManageRooms />} />
+          <Route path="rooms" element={<ManageRooms />} />
+          <Route path="reviews" element={<ManageReviews />} />
+          <Route path="customers" element={<ManageCustomers />} />
+          <Route path="content" element={<ManageContent />} />
+          <Route path="prices" element={<ManagePrices />} />
         </Route>
 
         {/* ================= Auth / Other Routes ================= */}
@@ -67,4 +85,3 @@ const Layout = () => {
 };
 
 export default Layout;
-
