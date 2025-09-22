@@ -1,0 +1,73 @@
+{
+  "id": 1,
+  "title": "A romantic break in Paris for Valentine's Day",
+  "readingTime": "16 min reading time",
+  "language": "English / Español",
+  "author": {
+    "name": "Sara García",
+    "avatar": "avatar_blog.png",
+    "bio": "Journalist and in love with trips full of new experiences. Writing and traveling merge to allow him the privilege of telling about what he discovers in every corner of the world and sharing them with anyone who wants to follow in his footsteps."
+  },
+  "intro": {
+    "heading": "Get ready for one of the most romantic trips with your partner to the city of love. Valentine's Day in Paris is the perfect excuse to spend a weekend connecting with the person you love.",
+    "desc": "February 14 is the ideal reason to do the thing you like best with your partner: travel. Walk the streets of the city accompanied by light hand in hand with the person for whom you just have to look into their eyes and bring in the whole world..."
+  },
+  "images": [
+    "image_blog.png",
+    "image1_blog.png",
+    "image2_blog.png"
+  ],
+  "advertisements": [
+    {
+      "title": "Idyllic stroll on the River Seine for couples",
+      "desc": "The perfect occasion for you to visit the banks of the Seine to celebrate Valentine's Day aboard one of the Parisian Bateux. You and your partner can visit during the day and get a different view of the city and even the sunset...",
+      "img": "advertisement.png"
+    },
+    {
+      "title": "Iconic settings for spending Valentine's Day in Paris",
+      "desc": "The Parisian city is also home to a huge collection of unforgettable places for enjoying the best romantic getaways on Valentine's Day. The Eiffel Tower, the Bridge of the Arts and Montmartre are some of the best known attractions...",
+      "img": "advertisement1.png"
+    },
+    {
+      "title": "Arc de Triomphe visit",
+      "desc": "Another good choice during the Christmas period would be to visit the Arc de Triomphe. An awesome view if the sky is clear over the huge city. It provides a 360° panoramic view and we recommend you get up first thing in the morning.",
+      "img": "advertisement2.png"
+    },
+    {
+      "title": "Strolls through the capital of love on Valentine's Day",
+      "desc": "If we’re talking about walks, the Parisian gardens are the perfect and most charming place to show off your romance. The Luxembourg Garden has an elegant design and beautiful pond... The Tuileries Gardens are also charming.",
+      "img": "advertisement3.png"
+    },
+    {
+      "title": "Passage des Panoramas",
+      "desc": "The covered passages in Paris have an undeniable romantic air. One of the most famous is the Passage des Panoramas, opened in 1871. Walking hand in hand is the most romantic and original thing you can do during your Valentine's Day getaway.",
+      "img": "advertisement4.png"
+    },
+    {
+      "title": "Bridge of the Arts",
+      "desc": "The bridges that cross the Seine in the capital of love are a perfect setting for every couple in love. A snapshot from the famous Bridge of the Arts could be one of the most special moments of your day.",
+      "img": "advertisement5.png"
+    }
+  ],
+  "hotelPromo": {
+    "title": "Discover our hotels in Paris",
+    "desc": "Choose your hotel and enjoy the benefits of booking on melia.com",
+    "btnText": "See More",
+    "img": "blogPhu.png"
+  },
+  "extraImage": "advertisement6.png",
+  "events": {
+    "left": {
+      "subtitle": "Meliá hotels near you",
+      "items": [
+        "Villa Marquis Meliá Collection",
+        "Maison Colbert Meliá Collection",
+        "Experiences"
+      ]
+    },
+    "right": {
+      "subtitle": "Meliá tags in this post",
+      "items": ["Holidays", "Getaway breaks", "Experiences"]
+    }
+  }
+}

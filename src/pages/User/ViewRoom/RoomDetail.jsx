@@ -57,15 +57,13 @@ const RoomDetail = () => {
           <b>View:</b> {room.view}
         </p>
       </div>
-
-      {/* Đánh giá */}
       <div className={styles.reviews}>
         <h3>Đánh giá khách hàng</h3>
 
         {/* Tổng rating */}
         <div className={styles.overallRating}>
           <span className={styles.score}>
-            {room.rating ? room.rating.toFixed(1) : "0.0"}
+            {room.rating ? room.rating.toFixed(1) : "4.5"}
           </span>
           <span>/ 5</span>
           <div className={styles.stars}>
@@ -106,6 +104,39 @@ const RoomDetail = () => {
               <p>{r.comment}</p>
             </div>
           ))}
+        </div>
+
+        {/* 👉 Form thêm đánh giá */}
+        <div className={styles.addReview}>
+          <h4>Viết đánh giá của bạn</h4>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const newReview = {
+                user: e.target.user.value,
+                stars: parseInt(e.target.stars.value),
+                comment: e.target.comment.value,
+              };
+              room.reviews.push(newReview); // hoặc gọi API lưu DB
+              e.target.reset();
+              alert("Cảm ơn bạn đã gửi đánh giá!");
+            }}
+          >
+            <input type="text" name="user" placeholder="Tên của bạn" required />
+            <select name="stars">
+              {[5, 4, 3, 2, 1].map((s) => (
+                <option key={s} value={s}>
+                  {s} ★
+                </option>
+              ))}
+            </select>
+            <textarea
+              name="comment"
+              placeholder="Nội dung đánh giá..."
+              required
+            />
+            <button type="submit">Gửi đánh giá</button>
+          </form>
         </div>
       </div>
 
