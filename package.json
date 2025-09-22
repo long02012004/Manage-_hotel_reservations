@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.1",
+    "@headlessui/react": "^2.2.8",
     "animate.css": "^4.1.1",
     "aos": "^2.3.4",
     "axios": "^1.11.0",

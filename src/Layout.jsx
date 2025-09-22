@@ -10,6 +10,7 @@ import Login from "./pages/Auth/LogIn/LogIn.jsx";
 import Profile from "./pages/User/Profile/Profile.jsx";
 import SignUp from "./pages/Auth/SignUp/SignUp.jsx";
 import ViewRoom from "./pages/User/ViewRoom/ViewRoom.jsx";
+import RoomDetail from "./pages/User/ViewRoom/RoomDetail.jsx";
 import Contact from "./pages/User/Contact/Contact.jsx";
 
 // Admin
@@ -41,6 +42,7 @@ const Layout = () => {
           <Route path="food" element={<Food />} />
           <Route path="profile" element={<Profile />} />
           <Route path="viewroom" element={<ViewRoom />} />
+          <Route path="viewroom/:id" element={<RoomDetail />} />
           <Route path="contact" element={<Contact />} />
         </Route>
 

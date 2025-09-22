@@ -11,8 +11,10 @@ import {
 import { TbAirConditioning } from "react-icons/tb";
 import { CiWifiOn, CiGift } from "react-icons/ci";
 import { MdFoodBank, MdOutlineCancel, MdPayment } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const RoomCard = ({
+  id,
   image,
   title,
   guests,
@@ -24,19 +26,24 @@ const RoomCard = ({
   price,
   oldPrice,
   discount,
-  booking,
+  /* booking, */
   amenities,
 }) => {
   return (
     <div className={styles["room-card"]}>
       {/* Hình ảnh */}
       <div className={styles["room-image"]}>
-        <img src={image} alt={title} />
+        <Link to={`/viewroom/${id}`}>
+          <img src={image} alt={title} />
+        </Link>
       </div>
 
       {/* Thông tin phòng */}
       <div className={styles["room-info"]}>
-        <h3>{title}</h3>
+        <h3>
+          {" "}
+          <Link to={`/viewroom/${id}`}>{title}</Link>
+        </h3>
         <div className={styles["sub-info"]}>
           <div>
             <FaUsers /> tối đa {guests} khách &nbsp;&nbsp;
@@ -120,7 +127,7 @@ const RoomCard = ({
       </div>
 
       {/* Booking box */}
-      <div className={styles["booking-box"]}>
+      {/*    <div className={styles["booking-box"]}>
         <h4>Đơn đặt phòng của tôi</h4>
         <div className={styles["stay-info"]}>
           <p>{booking.nights} đêm</p>
@@ -132,7 +139,7 @@ const RoomCard = ({
             {booking.checkOutDetail}
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

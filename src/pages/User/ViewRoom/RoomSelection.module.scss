@@ -80,6 +80,10 @@
   border-radius: 8px;
   padding: 16px;
   background: white;
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 
   .room-image img {
     width: 100%;

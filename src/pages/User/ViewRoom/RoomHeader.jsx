@@ -98,11 +98,12 @@ const RoomHeader = ({ setRooms }) => {
             value={guests}
             onChange={(e) => setGuests(e.target.value)}
           >
-            <option value="1">1 người</option>
-            <option value="2">2 người</option>
-            <option value="3">3 người</option>
-            <option value="4">4 người</option>
-            <option value="5">5 người</option>
+            <option value="1">Trống</option>
+            <option value="2">1 người</option>
+            <option value="3">2 người</option>
+            <option value="4">3 người</option>
+            <option value="5">4 người</option>
+            <option value="6">5 người</option>
           </select>
         </div>
 
