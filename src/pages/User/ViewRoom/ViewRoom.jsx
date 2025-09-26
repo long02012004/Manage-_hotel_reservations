@@ -1,12 +1,27 @@
 import RoomHeader from "./RoomHeader";
-import { mockRooms } from "../../../services/mockRooms";
-
 import styles from "./ViewRoom.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RoomSelection from "./RoomSelection";
 import Footer from "../../../components/Footer/Footer";
+import { getRooms } from "../../../services/AppService"; // thêm API
+
 const ViewRoom = () => {
-  const [rooms, setRooms] = useState(mockRooms); // dữ liệu phòng từ BE
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getRooms()
+      .then((res) => {
+        setRooms(res.data); 
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi gọi API:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Đang tải danh sách phòng...</p>;
 
   return (
     <>
@@ -20,4 +35,3 @@ const ViewRoom = () => {
 };
 
 export default ViewRoom;
-// // src/pages/ViewRoom/ViewRoom.jsx

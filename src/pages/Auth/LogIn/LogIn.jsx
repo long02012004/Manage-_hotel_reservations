@@ -7,26 +7,25 @@ import { useDispatch } from "react-redux";
 import { doLogin } from "../../../redux/action/userAction";
 
 const LogIn = () => {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
 
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
+
+   const validatePhone = (phone) => {
+    return /^(0|\+84)[0-9]{9,10}$/.test(phone); // Regex cho số điện thoại VN
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // ✅ chặn reload mặc định
 
-    const isValidEmail = validateEmail(email);
-    if (!isValidEmail) {
-      toast.error("Email không hợp lệ");
+    const isValidPhone = validatePhone(phone);
+    if (!isValidPhone) {
+      toast.error("Phone Number không hợp lệ");
       return;
     }
 
@@ -36,19 +35,21 @@ const LogIn = () => {
     }
 
     try {
-      let data = await postLogin({ email, password });
-      if (data.data && data.data.EC === 0) {
-        dispatch(doLogin(data.data));
+      let res = await postLogin({
+        phone_number: phone, password
+      });
+       if (res && res.status === 200) {
+        dispatch(doLogin(res.data));
 
-        toast.success(data.data.EM);
-        navigate("/");
-      } else {
-        toast.error(data.data?.EM || "Login failed");
-      }
-    } catch (err) {
-      toast.error("Server error, please try again later");
-      console.error(err);
-    } finally {
+              toast.success("Đăng nhập thành công!");
+              navigate("/");
+            } else {
+              toast.error("Đăng nhập thất bại!");
+            }
+          } catch (err) {
+            console.error("Login error:", err);
+            toast.error("Có lỗi xảy ra khi đăng nhập!");
+          }finally{
       setIsLoading(false);
     }
   };
@@ -60,13 +61,13 @@ const LogIn = () => {
         <form onSubmit={handleSubmit}>
           <div className={styles["user-box"]}>
             <input
-              id="email"
-              type="email"
+              id="phone"
+              type="phone"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
-            <label htmlFor="email">Email</label>
+            <label htmlFor="phone">Phone Number</label>
           </div>
           <div className={styles["user-box"]}>
             <input
@@ -78,11 +79,7 @@ const LogIn = () => {
             />
             <label htmlFor="password">Password</label>
           </div>
-          <button
-            type="submit"
-            className={styles["login-btn"]}
-            disabled={isLoading}
-          >
+          <button type="submit" className={styles["login-btn"] } disabled={isLoading}>
             {isLoading ? "Loading..." : "Đăng nhập"}
           </button>
         </form>
@@ -100,3 +97,6 @@ const LogIn = () => {
 };
 
 export default LogIn;
+
+
+// 

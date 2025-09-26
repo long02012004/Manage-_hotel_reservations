@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { backgroundSignUp, flag, rocket } from "../../../assets/images/img";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,10 +9,10 @@ import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [phone, setPhone] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [phone_number, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [retype_password, setConfirmPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [isPolicyChecked, setIsPolicyChecked] = useState(false);
@@ -29,31 +30,23 @@ const SignUp = () => {
     return /^(0|\+84)[0-9]{9,10}$/.test(phone); // Regex cho số điện thoại VN
   };
 
-  // 🟢 Hàm xử lý submit form
+  // Xử lý submit
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    const isValidEmail = validateEmail(email);
-    const isValidPhone = validatePhone(phone);
-
-    // Validation
-    if (!username || username.length < 3) {
-      toast.error("Tên người dùng phải có ít nhất 3 ký tự!");
+    if (!email || !phone_number || !password || !fullname) {
+      toast.error("Vui lòng nhập đầy đủ Họ tên, Email, Số điện thoại và Mật khẩu!");
       return;
     }
-    if (!email || !phone || !password) {
-      toast.error("Vui lòng nhập đầy đủ Email, Số điện thoại và Mật khẩu!");
-      return;
-    }
-    if (!isValidEmail) {
+    if (!validateEmail(email)) {
       toast.error("Email không hợp lệ");
       return;
     }
-    if (!isValidPhone) {
+    if (!validatePhone(phone_number)) {
       toast.error("Số điện thoại không hợp lệ");
       return;
     }
-    if (password !== confirmPassword) {
+    if (password !== retype_password) {
       toast.error("Mật khẩu xác nhận không khớp");
       return;
     }
@@ -63,13 +56,34 @@ const SignUp = () => {
     }
 
     try {
-      let data = await postSignUp({ email, password, username });
+      // Gửi đúng body BE yêu cầu
+      let res = await postSignUp({
+        fullname: fullname,
+        phone_number,
+        email: email,
+        password,
+        retype_password,
+        role_id: 1,
+      });
 
-      if (data.data && data.data.EC === 0) {
-        toast.success(data.data.EM);
+//       {
+//   "fullname": "pham thang",
+//   "phone_number": "0702389151",
+//   "email": "admin@gmail.com",
+//   "password": "123456",
+//   "retype_password": "123456",
+//   "date_of_birth": "1990-01-01",
+//   "facebook_account_id": 0,
+//   "google_account_id": 0,
+//   "role_id": 2
+// }
+
+
+      if (res && res.status === 200) {
+        toast.success("Đăng ký thành công!");
         navigate("/login");
       } else {
-        toast.error(data.data.EM);
+        toast.error("Đăng ký thất bại!");
       }
     } catch (err) {
       console.error("Sign up error:", err);
@@ -97,7 +111,6 @@ const SignUp = () => {
               src={flag}
               alt="Flag"
             />
-            <i className="bx bx-chevron-down"></i>
           </div>
 
           <h2 className={styles["sign-up__title"]}>
@@ -109,134 +122,80 @@ const SignUp = () => {
             />
           </h2>
 
-          {/* Nút login với Google */}
-          <Link to="/home" className={styles["sign-up__google-link"]}>
-            <button className={styles["sign-up__google-login"]}>
-              <i className="fa-brands fa-google"></i> Đăng nhập với Google
-            </button>
-          </Link>
-
-          {/* Separator */}
-          <div className={styles["sign-up__separator"]}>
-            <div className={styles["sign-up__separator-line"]}></div>
-            <span className={styles["sign-up__or"]}>Hoặc</span>
-            <div className={styles["sign-up__separator-line"]}></div>
-          </div>
-
           <form className={styles["sign-up__form"]} onSubmit={handleSignUp}>
-            {/* 🆕 Ô nhập Username */}
-            <label htmlFor="username" className={styles["sign-up__label"]}>
-              Tên người dùng
-            </label>
+            <label className={styles["sign-up__label"]}>Họ và tên</label>
             <input
-              id="username"
               className={styles["sign-up__input"]}
               type="text"
-              name="username"
-              placeholder="Nhập tên người dùng"
-              title="Vui lòng nhập tên người dùng"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Nhập họ tên"
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
             />
 
-            <label htmlFor="email" className={styles["sign-up__label"]}>
-              Email
-            </label>
+            <label className={styles["sign-up__label"]}>Email</label>
             <input
-              id="email"
               className={styles["sign-up__input"]}
               type="text"
-              name="email"
-              placeholder="Nhập Email "
-              title="Vui lòng nhập email "
+              placeholder="Nhập Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <label htmlFor="phone" className={styles["sign-up__label"]}>
-              Số Điện Thoại
-            </label>
+            <label className={styles["sign-up__label"]}>Số điện thoại</label>
             <input
-              id="phone"
               className={styles["sign-up__input"]}
               type="text"
-              name="phone"
               placeholder="Nhập số điện thoại"
-              title="Vui lòng nhập số điện thoại"
-              value={phone}
+              value={phone_number}
               onChange={(e) => setPhone(e.target.value)}
             />
 
-            <label htmlFor="password" className={styles["sign-up__label"]}>
-              Mật khẩu
-            </label>
+            <label className={styles["sign-up__label"]}>Mật khẩu</label>
             <div className={styles["sign-up__password-wrapper"]}>
               <input
-                id="password"
-                className={`${styles["sign-up__input"]} ${styles["sign-up__input--password"]}`}
+                className={styles["sign-up__input"]}
                 type={isShowPassword ? "text" : "password"}
-                name="password"
                 placeholder="Nhập mật khẩu"
-                title="Vui lòng nhập mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {isShowPassword ? (
-                <span
-                  className={styles["sign-up__password-icon"]}
-                  onClick={() => setIsShowPassword(false)}
-                >
+              <span
+                className={styles["sign-up__password-icon"]}
+                onClick={() => setIsShowPassword(!isShowPassword)}
+              >
+                {isShowPassword ? (
                   <VscEye className={styles["icons-eye"]} />
-                </span>
-              ) : (
-                <span
-                  className={styles["sign-up__password-icon"]}
-                  onClick={() => setIsShowPassword(true)}
-                >
+                ) : (
                   <VscEyeClosed className={styles["icons-eye"]} />
-                </span>
-              )}
+                )}
+              </span>
             </div>
 
-            <label
-              htmlFor="confirm-password"
-              className={styles["sign-up__label"]}
-            >
-              Xác nhận lại mật khẩu
-            </label>
+            <label className={styles["sign-up__label"]}>Xác nhận mật khẩu</label>
             <div className={styles["sign-up__password-wrapper"]}>
               <input
-                id="confirm-password"
-                className={`${styles["sign-up__input"]} ${styles["sign-up__input--password"]}`}
+                className={styles["sign-up__input"]}
                 type={isShowConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
                 placeholder="Nhập lại mật khẩu"
-                title="Xác nhận lại mật khẩu"
-                value={confirmPassword}
+                value={retype_password}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              {isShowConfirmPassword ? (
-                <span
-                  className={styles["sign-up__password-icon"]}
-                  onClick={() => setIsShowConfirmPassword(false)}
-                >
+              <span
+                className={styles["sign-up__password-icon"]}
+                onClick={() =>
+                  setIsShowConfirmPassword(!isShowConfirmPassword)
+                }
+              >
+                {isShowConfirmPassword ? (
                   <VscEye className={styles["icons-eye"]} />
-                </span>
-              ) : (
-                <span
-                  className={styles["sign-up__password-icon"]}
-                  onClick={() => setIsShowConfirmPassword(true)}
-                >
+                ) : (
                   <VscEyeClosed className={styles["icons-eye"]} />
-                </span>
-              )}
+                )}
+              </span>
             </div>
 
             <div className={styles["sign-up__checkbox"]}>
-              <label
-                htmlFor="terms"
-                className={styles["sign-up__checkbox-label"]}
-              >
+              <label className={styles["sign-up__checkbox-label"]}>
                 <input
                   type="checkbox"
                   checked={isPolicyChecked}
@@ -248,11 +207,7 @@ const SignUp = () => {
               </span>
             </div>
 
-            <button
-              className={styles["sign-up__submit"]}
-              type="submit"
-              title="Đăng ký tài khoản"
-            >
+            <button className={styles["sign-up__submit"]} type="submit">
               Đăng ký
             </button>
           </form>
