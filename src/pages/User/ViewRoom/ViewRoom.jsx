@@ -1,24 +1,28 @@
-import RoomHeader from "./RoomHeader";
-import styles from "./ViewRoom.module.scss";
 import { useEffect, useState } from "react";
-import RoomSelection from "./RoomSelection";
 import Footer from "../../../components/Footer/Footer";
-import { getRooms } from "../../../services/AppService"; // thêm API
+import { getRooms } from "../../../services/AppService";
+import RoomHeader from "./RoomHeader";
+import RoomSelection from "./RoomSelection";
+import { toRoomCardProps } from "./toRoomCardProps";
+import styles from "./ViewRoom.module.scss";
 
 const ViewRoom = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getRooms()
+    getRooms({ page: 0, limit: 10 })
       .then((res) => {
-        setRooms(res.data); 
-        setLoading(false);
+        // BE có thể trả về {content: [...]}, hoặc mảng thẳng
+        const data = Array.isArray(res.data)
+          ? res.data
+          : res.data?.content || [];
+
+        // Chuẩn hóa từng phòng trước khi render
+        setRooms(data.map(toRoomCardProps));
       })
-      .catch((err) => {
-        console.error("Lỗi khi gọi API:", err);
-        setLoading(false);
-      });
+      .catch((err) => console.error("Lỗi API:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <p>Đang tải danh sách phòng...</p>;
@@ -26,7 +30,7 @@ const ViewRoom = () => {
   return (
     <>
       <div className={styles["view-room"]}>
-        <RoomHeader setRooms={setRooms} />
+        <RoomHeader setRooms={(list) => setRooms(list.map(toRoomCardProps))} />
         <RoomSelection roomsData={rooms} />
       </div>
       <Footer />
