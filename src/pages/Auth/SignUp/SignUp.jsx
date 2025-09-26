@@ -8,6 +8,7 @@ import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,6 +16,7 @@ const SignUp = () => {
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [isPolicyChecked, setIsPolicyChecked] = useState(false);
   const navigate = useNavigate();
+
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -22,17 +24,23 @@ const SignUp = () => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
+
   const validatePhone = (phone) => {
     return /^(0|\+84)[0-9]{9,10}$/.test(phone); // Regex cho số điện thoại VN
   };
 
   // 🟢 Hàm xử lý submit form
   const handleSignUp = async (e) => {
-    e.preventDefault(); // ⛔ chặn reload ngay từ đầu
+    e.preventDefault();
+
     const isValidEmail = validateEmail(email);
     const isValidPhone = validatePhone(phone);
 
-    // 🟢 Validation
+    // Validation
+    if (!username || username.length < 3) {
+      toast.error("Tên người dùng phải có ít nhất 3 ký tự!");
+      return;
+    }
     if (!email || !phone || !password) {
       toast.error("Vui lòng nhập đầy đủ Email, Số điện thoại và Mật khẩu!");
       return;
@@ -55,11 +63,11 @@ const SignUp = () => {
     }
 
     try {
-      let data = await postSignUp({ email, phone, password });
+      let data = await postSignUp({ email, phone, password, username });
 
       if (data.data && data.data.EC === 0) {
         toast.success(data.data.EM);
-        navigate("/login"); // Chuyển hướng đến trang login sau khi đăng ký thành công
+        navigate("/login");
       } else {
         toast.error(data.data.EM);
       }
@@ -116,6 +124,21 @@ const SignUp = () => {
           </div>
 
           <form className={styles["sign-up__form"]} onSubmit={handleSignUp}>
+            {/* 🆕 Ô nhập Username */}
+            <label htmlFor="username" className={styles["sign-up__label"]}>
+              Tên người dùng
+            </label>
+            <input
+              id="username"
+              className={styles["sign-up__input"]}
+              type="text"
+              name="username"
+              placeholder="Nhập tên người dùng"
+              title="Vui lòng nhập tên người dùng"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+
             <label htmlFor="email" className={styles["sign-up__label"]}>
               Email
             </label>
@@ -129,6 +152,7 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
             <label htmlFor="phone" className={styles["sign-up__label"]}>
               Số Điện Thoại
             </label>
@@ -142,6 +166,7 @@ const SignUp = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
+
             <label htmlFor="password" className={styles["sign-up__label"]}>
               Mật khẩu
             </label>
@@ -171,9 +196,6 @@ const SignUp = () => {
                   <VscEyeClosed className={styles["icons-eye"]} />
                 </span>
               )}
-              {/*   <div className={styles["sign-up__password-icon"]}>
-                <i className="fa-solid fa-eye-slash"></i>
-              </div> */}
             </div>
 
             <label
@@ -208,9 +230,6 @@ const SignUp = () => {
                   <VscEyeClosed className={styles["icons-eye"]} />
                 </span>
               )}
-              {/*  <div className={styles["sign-up__password-icon"]}>
-                <i className="fa-solid fa-eye-slash"></i>
-              </div> */}
             </div>
 
             <div className={styles["sign-up__checkbox"]}>
@@ -238,7 +257,6 @@ const SignUp = () => {
             </button>
           </form>
 
-          {/* 🟢 SỬA 2: bỏ onClick={handleLogin()} ở link "Đăng nhập" */}
           <p className={styles["sign-up__login-link"]}>
             Đã có tài khoản?{" "}
             <Link to="/login" className={styles["sign-up__login-link-anchor"]}>

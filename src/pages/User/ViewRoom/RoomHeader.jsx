@@ -1,8 +1,7 @@
 import React from "react";
 import styles from "./RoomHeader.module.scss";
-/* import { postSearchRooms } from "../../../services/AppService";
-
- */ import { toast } from "react-toastify";
+/* import { postSearchRooms } from "../../../services/AppService";*/
+import { toast } from "react-toastify";
 import { mockRooms } from "../../../services/mockRooms";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
