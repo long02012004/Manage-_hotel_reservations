@@ -15,4 +15,5 @@ const postSearchRooms = (data) => {
   return axios.post(`/api/v1/search`, data);
 };
 
+
 export { postLogin, postSignUp, postSearchRooms };
