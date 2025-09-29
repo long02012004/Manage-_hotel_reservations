@@ -28,8 +28,21 @@ export const createRoom = (formData) =>
   axios.post("/rooms", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+
+// API cập nhật nhân viên
+export const updateStaff = (id, formData) =>
+  axios.put(`/users/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+// API xóa nhân viên
+export const deleteStaff = (id) => axios.delete(`/users/${id}`);
+
+// API xóa phòng 
+export const deleteRoom = (id) => axios.delete(`/rooms/${id}`);
+// Lấy danh sách tất cả khách hàng (dành cho nhân viên)
+export const getAllCustomers = () => axios.get("/customers/staff");
+
+
 // API lấy danh sách đặt phòng chưa có
 export const getAllBookings = (params = { page: 0, limit: 10 }) =>
   axios.get("/bookings", { params });
-// API xóa phòng chưa có
-export const deleteRoom = (id) => axios.delete(`/rooms/${id}`);

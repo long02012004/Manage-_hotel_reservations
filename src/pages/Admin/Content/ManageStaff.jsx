@@ -3,7 +3,8 @@ import { Card, Table, Button, Row, Col, Form } from "react-bootstrap";
 import AddStaffModal from "./AddStaffModal";
 import EditStaffModal from "./EditStaffModal";
 import ViewStaffModal from "./ViewStaffModal";
-import { getAllStaff } from "../../../services/AppService";
+import { getAllStaff, deleteStaff } from "../../../services/AppService";
+import { toast } from "react-toastify";
 
 const ManageStaff = () => {
   const [staffList, setStaffList] = useState([]);
@@ -39,10 +40,15 @@ const ManageStaff = () => {
     setSearchResult(filtered);
   };
 
-  const handleDelete = (id) => {
-    const newList = staffList.filter((s) => s.staffId !== id);
-    setStaffList(newList);
-    setSearchResult(newList);
+  const handleDelete = async (id) => {
+    try {
+      await deleteStaff(id); // gọi BE xóa
+      // load lại danh sách từ server để chắc chắn
+      toast.success("Xóa staff thành công!");
+      fetchStaff();
+    } catch (err) {
+      toast.error("Lỗi khi xóa staff:", err);
+    }
   };
 
   return (

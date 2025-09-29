@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Card, Table, Button, Row, Col, Form, Badge } from "react-bootstrap";
 import { getAllBookings } from "../../../services/AppService"; // API bạn cần viết
+import { toast } from "react-toastify";
 
 const ManageBooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -17,8 +18,9 @@ const ManageBooking = () => {
       const res = await getAllBookings({ page: 0, limit: 20 });
       setBookings(res.data);
       setFiltered(res.data);
+      toast.success(" Lấy danh sách booking thành công");
     } catch (err) {
-      console.error("❌ Lỗi khi lấy danh sách booking:", err);
+      toast.error(" Lỗi khi lấy danh sách booking:", err);
     }
   };
 
@@ -64,7 +66,13 @@ const ManageBooking = () => {
 
       {/* Bảng danh sách booking */}
       <Card>
-        <Table striped bordered hover responsive className="text-center align-middle">
+        <Table
+          striped
+          bordered
+          hover
+          responsive
+          className="text-center align-middle"
+        >
           <thead className="table-dark">
             <tr>
               <th>#</th>

@@ -1,30 +1,47 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Form, Image, Row, Col } from "react-bootstrap";
 import styles from "./EditStaffModal.module.scss";
+import { updateStaff } from "../../../services/AppService"; // API PUT /users/{id}
 
-const EditStaffModal = ({ show, onHide, staff, onUpdate }) => {
+const EditStaffModal = ({ show, onHide, staff, onUpdated }) => {
   const [updatedStaff, setUpdatedStaff] = useState({
     id: null,
-    name: "",
-    position: "",
+    fullName: "",
     email: "",
-    username: "",
+    phoneNumber: "",
     password: "",
     image: "",
+    imageFile: null,
+    facebookAccountId: 0,
+    googleAccountId: 0,
   });
 
   useEffect(() => {
-    if (staff) setUpdatedStaff(staff);
-    else
+    if (staff) {
+      setUpdatedStaff({
+        id: staff.staffId,
+        fullName: staff.fullName || "",
+        email: staff.email || "",
+        phoneNumber: staff.phoneNumber || "",
+        password: "",
+        image: staff.image || "",
+        imageFile: null,
+        facebookAccountId: staff.facebookAccountId || 0,
+        googleAccountId: staff.googleAccountId || 0,
+      });
+    } else {
       setUpdatedStaff({
         id: null,
-        name: "",
-        position: "",
+        fullName: "",
         email: "",
-        username: "",
+        phoneNumber: "",
         password: "",
         image: "",
+        imageFile: null,
+        facebookAccountId: 0,
+        googleAccountId: 0,
       });
+    }
   }, [staff]);
 
   const handleChange = (e) => {
@@ -34,14 +51,41 @@ const EditStaffModal = ({ show, onHide, staff, onUpdate }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file)
-      setUpdatedStaff({ ...updatedStaff, image: URL.createObjectURL(file) });
+    if (file) {
+      setUpdatedStaff({
+        ...updatedStaff,
+        image: URL.createObjectURL(file), // preview
+        imageFile: file, // file thực gửi lên BE
+      });
+    }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!updatedStaff.id) return;
-    onUpdate(updatedStaff);
-    onHide();
+
+    try {
+      const formData = new FormData();
+      formData.append("fullName", updatedStaff.fullName || "");
+      formData.append("email", updatedStaff.email || "");
+      formData.append("phoneNumber", updatedStaff.phoneNumber || "");
+      formData.append("password", updatedStaff.password || "");
+      formData.append("facebookAccountId", updatedStaff.facebookAccountId || 0);
+      formData.append("googleAccountId", updatedStaff.googleAccountId || 0);
+
+      if (updatedStaff.imageFile) {
+        formData.append("files", updatedStaff.imageFile);
+      }
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      await updateStaff(updatedStaff.id, formData);
+
+      if (onUpdated) onUpdated(); // reload danh sách
+      onHide();
+    } catch (err) {
+      console.error("Lỗi khi update staff:", err);
+    }
   };
 
   return (
@@ -54,18 +98,10 @@ const EditStaffModal = ({ show, onHide, staff, onUpdate }) => {
           <Col md={8}>
             <Form className={styles.modalBody}>
               <Form.Group className="mb-2">
-                <Form.Label>Tên</Form.Label>
+                <Form.Label>Họ tên</Form.Label>
                 <Form.Control
-                  name="name"
-                  value={updatedStaff.name || ""}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group className="mb-2">
-                <Form.Label>Vị trí</Form.Label>
-                <Form.Control
-                  name="position"
-                  value={updatedStaff.position || ""}
+                  name="fullName"
+                  value={updatedStaff.fullName || ""}
                   onChange={handleChange}
                 />
               </Form.Group>
@@ -78,15 +114,15 @@ const EditStaffModal = ({ show, onHide, staff, onUpdate }) => {
                 />
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Username</Form.Label>
+                <Form.Label>Số điện thoại</Form.Label>
                 <Form.Control
-                  name="username"
-                  value={updatedStaff.username || ""}
+                  name="phoneNumber"
+                  value={updatedStaff.phoneNumber || ""}
                   onChange={handleChange}
                 />
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Mật khẩu</Form.Label>
                 <Form.Control
                   type="password"
                   name="password"
@@ -95,7 +131,7 @@ const EditStaffModal = ({ show, onHide, staff, onUpdate }) => {
                 />
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Hình ảnh</Form.Label>
+                <Form.Label>Ảnh đại diện</Form.Label>
                 <Form.Control
                   type="file"
                   accept="image/*"

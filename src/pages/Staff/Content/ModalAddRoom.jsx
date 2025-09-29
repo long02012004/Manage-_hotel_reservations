@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createRoom } from "../../../services/AppService";
 import styles from "./ManageRooms.module.scss";
+import { toast } from "react-toastify";
 
 const ModalAddRoom = ({ onClose, onSave }) => {
   const [room, setRoom] = useState({
@@ -64,12 +65,12 @@ const ModalAddRoom = ({ onClose, onSave }) => {
 
     try {
       const res = await createRoom(formData);
-      alert("✅ Thêm phòng thành công!");
+      toast.success(" Thêm phòng thành công!");
       if (onSave) onSave(res.data.roomDTO);
       onClose();
     } catch (err) {
-      console.error("❌ Lỗi khi thêm phòng:", err.response?.data || err);
-      alert("❌ Thêm phòng thất bại!");
+      console.error(" Lỗi khi thêm phòng:", err.response?.data || err);
+      toast.error(" Thêm phòng thất bại!");
     }
   };
 
@@ -78,45 +79,116 @@ const ModalAddRoom = ({ onClose, onSave }) => {
       <div className={styles.modalContent}>
         <h3>Thêm Phòng</h3>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <input name="name" placeholder="Tên phòng" onChange={handleChange} required />
+          <input
+            name="name"
+            placeholder="Tên phòng"
+            onChange={handleChange}
+            required
+          />
           <input name="title" placeholder="Tiêu đề" onChange={handleChange} />
           <input name="address" placeholder="Địa chỉ" onChange={handleChange} />
-          <textarea name="description" placeholder="Mô tả" onChange={handleChange}></textarea>
-          <input type="number" name="guests" placeholder="Sức chứa" onChange={handleChange} />
-          <input type="number" name="size" placeholder="Diện tích (m²)" onChange={handleChange} />
-          <input name="beds" placeholder="Loại giường" onChange={handleChange} />
+          <textarea
+            name="description"
+            placeholder="Mô tả"
+            onChange={handleChange}
+          ></textarea>
+          <input
+            type="number"
+            name="guests"
+            placeholder="Sức chứa"
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="size"
+            placeholder="Diện tích (m²)"
+            onChange={handleChange}
+          />
+          <input
+            name="beds"
+            placeholder="Loại giường"
+            onChange={handleChange}
+          />
           <input name="view" placeholder="View" onChange={handleChange} />
-          <input type="number" name="price" placeholder="Giá" onChange={handleChange} required />
-          <input type="number" name="oldPrice" placeholder="Giá cũ" onChange={handleChange} />
-          <input type="number" name="discount" placeholder="Giảm giá (%)" onChange={handleChange} />
+          <input
+            type="number"
+            name="price"
+            placeholder="Giá"
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="number"
+            name="oldPrice"
+            placeholder="Giá cũ"
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="discount"
+            placeholder="Giảm giá (%)"
+            onChange={handleChange}
+          />
 
           {/* Checkbox boolean */}
           <label>
-            <input type="checkbox" name="airConditioning" checked={room.airConditioning} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="airConditioning"
+              checked={room.airConditioning}
+              onChange={handleChange}
+            />
             Điều hòa
           </label>
           <label>
-            <input type="checkbox" name="wifi" checked={room.wifi} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="wifi"
+              checked={room.wifi}
+              onChange={handleChange}
+            />
             Wifi
           </label>
           <label>
-            <input type="checkbox" name="hairDryer" checked={room.hairDryer} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="hairDryer"
+              checked={room.hairDryer}
+              onChange={handleChange}
+            />
             Máy sấy tóc
           </label>
           <label>
-            <input type="checkbox" name="petsAllowed" checked={room.petsAllowed} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="petsAllowed"
+              checked={room.petsAllowed}
+              onChange={handleChange}
+            />
             Thú cưng
           </label>
           <label>
-            <input type="checkbox" name="nonSmoking" checked={room.nonSmoking} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="nonSmoking"
+              checked={room.nonSmoking}
+              onChange={handleChange}
+            />
             Không hút thuốc
           </label>
 
-          <input type="file" name="files" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="file"
+            name="files"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
 
           <div className={styles.actions}>
             <button type="submit">Lưu</button>
-            <button type="button" onClick={onClose}>Hủy</button>
+            <button type="button" onClick={onClose}>
+              Hủy
+            </button>
           </div>
         </form>
       </div>

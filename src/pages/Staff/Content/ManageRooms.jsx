@@ -5,6 +5,7 @@ import ModalAddRoom from "./ModalAddRoom";
 import ModalEditRoom from "./ModalEditRoom";
 import ModalViewRoom from "./ModalViewRoom";
 import { getRooms, deleteRoom } from "../../../services/AppService";
+import { toast } from "react-toastify";
 
 const ManageRooms = () => {
   const [rooms, setRooms] = useState([]);
@@ -24,7 +25,7 @@ const ManageRooms = () => {
       const res = await getRooms({ page: 0, limit: 20 });
       setRooms(res.data || []);
     } catch (err) {
-      console.error("❌ Lỗi khi lấy danh sách phòng:", err);
+      toast.error(" Lỗi khi lấy danh sách phòng:", err);
     }
   };
 
@@ -33,8 +34,9 @@ const ManageRooms = () => {
       try {
         await deleteRoom(id);
         fetchRooms(); // load lại danh sách sau khi xóa
+        toast.success("Xóa phòng thành công!");
       } catch (err) {
-        console.error("❌ Lỗi khi xóa phòng:", err);
+        toast.error(" Lỗi khi xóa phòng:", err);
       }
     }
   };
