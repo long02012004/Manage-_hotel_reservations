@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { getRoomById } from "../../../services/AppService";
 import { resolveImageUrl } from "../../../utils/resolveImageUrl";
 import ModalBooking from "./ModalBooking";
 import styles from "./RoomDetail.module.scss";
+import {
+  FaMapMarkerAlt, FaUsers, FaRulerCombined, FaBed, FaCity,
+  FaWifi, FaSnowflake, FaDog, FaSmokingBan, FaWind, FaRegClock,
+} from "react-icons/fa";
 
 // Adapter BE -> FE (hỗ trợ roomId/name, beds là chuỗi, thiếu image)
 const toDetail = (d, fallbackImage) =>
@@ -31,6 +35,8 @@ const toDetail = (d, fallbackImage) =>
       wifi: !!d.wifi,
       petsAllowed: !!d.petsAllowed,
     },
+    rating: d.rating, // nếu BE có
+    reviews: d.reviews, // nếu BE có
   };
 
 const RoomDetail = () => {
@@ -41,14 +47,15 @@ const RoomDetail = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const fmt = useMemo(
+    () => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }),
+    []
+  );
+
   useEffect(() => {
     setLoading(true);
     getRoomById(id)
-      .then((res) => {
-        // API detail của bạn trả object phẳng: { roomId, name, ... }
-        const raw = res.data ?? null;
-        setRoom(toDetail(raw, imageFromList));
-      })
+      .then((res) => setRoom(toDetail(res.data ?? null, imageFromList)))
       .catch((err) => {
         console.error("Lỗi API:", err?.response?.status, err?.response?.data);
         setRoom(null);
@@ -56,68 +63,105 @@ const RoomDetail = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const bedText = useMemo(
-    () => (room?.beds?.length ? room.beds.join(", ") : "—"),
-    [room]
-  );
+  if (loading) {
+    return (
+      <div className={styles.roomDetail}>
+        <div className={styles.breadcrumbSkeleton} />
+        <div className={styles.titleSkeleton} />
+        <div className={styles.imageSkeleton} />
+        <div className={styles.metaSkeleton} />
+      </div>
+    );
+  }
 
-  if (loading) return <p>Đang tải chi tiết phòng...</p>;
   if (!room) return <p>Không tìm thấy phòng.</p>;
+
+  const bedText = room.beds?.length ? room.beds.join(", ") : "—";
 
   return (
     <div className={styles.roomDetail}>
-      <h1 className={styles.title}>{room.title}</h1>
-      <p className={styles.address}>📍 {room.address}</p>
-      <p className={styles.desc}>{room.description}</p>
+      {/* Breadcrumb + tag nhỏ */}
+     {/*  <nav className={styles.breadcrumb}>
+        <Link to="/">Trang chủ</Link>
+        <span>›</span>
+        <Link to="/rooms">Phòng</Link>
+        <span>›</span>
+        <span className={styles.current}>{room.title}</span>
+      </nav> */}
 
+      <header className={styles.header}>
+        <h1 className={styles.title}>{room.title}</h1>
+
+        <div className={styles.tagRow}>
+          {room.discount ? (
+            <span className={styles.badgeDiscount}>Giảm {room.discount}%</span>
+          ) : (
+            <span className={styles.badgeSoft}>Ưu đãi</span>
+          )}
+          {room.amenities?.wifi && <span className={styles.pill}><FaWifi /> Wifi miễn phí</span>}
+          {room.amenities?.airConditioning && <span className={styles.pill}><FaSnowflake /> Máy lạnh</span>}
+          {room.amenities?.nonSmoking && <span className={styles.pill}><FaSmokingBan /> Không hút thuốc</span>}
+          {room.amenities?.hairDryer && <span className={styles.pill}><FaWind /> Máy sấy tóc</span>}
+          {room.amenities?.petsAllowed && <span className={styles.pill}><FaDog /> Thú cưng</span>}
+        </div>
+
+        <p className={styles.address}><FaMapMarkerAlt /> {room.address}</p>
+        {room.description && <p className={styles.desc}>{room.description}</p>}
+      </header>
+
+      {/* Ảnh lớn */}
       {room.image && (
         <img
           className={styles.image}
           src={room.image}
           alt={room.title}
-          onError={(e) => {
-            console.error("Ảnh lỗi:", room.image);
-            e.currentTarget.style.display = "none";
-          }}
+          onError={(e) => (e.currentTarget.style.display = "none")}
         />
       )}
 
+      {/* Meta – chuyển thành card nhỏ đẹp */}
       <div className={styles.meta}>
-        <p>
-          <b>Khách tối đa:</b> {room.guests}
-        </p>
-        <p>
-          <b>Diện tích:</b> {room.size} m²
-        </p>
-        <p>
-          <b>Giường:</b> {bedText}
-        </p>
-        {room.view && (
-          <p>
-            <b>View:</b> {room.view}
-          </p>
+        <p><b><FaUsers /> Khách tối đa:</b> {room.guests}</p>
+        <p><b><FaRulerCombined /> Diện tích:</b> {room.size} m²</p>
+        <p><b><FaBed /> Giường:</b> {bedText}</p>
+        {room.view && <p><b><FaCity /> View:</b> {room.view}</p>}
+        {room.rating && (
+          <p><b>Đánh giá:</b> {room.rating} ⭐ {room.reviews ? `(${room.reviews} lượt)` : ""}</p>
         )}
       </div>
 
-      <p className={styles.priceLine}>
-        <b>Giá:</b> {room.price}₫{" "}
-        {room.oldPrice && (
-          <span className={styles.oldPrice}>{room.oldPrice}₫</span>
-        )}
-        {room.discount && (
-          <span className={styles.discount}> -{room.discount}%</span>
-        )}
-      </p>
+      {/* Giá + CTA */}
+      <div className={styles.priceLine}>
+        <b>{fmt.format(room.price)}</b>
+        {room.oldPrice && <span className={styles.oldPrice}>{fmt.format(room.oldPrice)}</span>}
+        {room.discount && <span className={styles.discount}>-{room.discount}%</span>}
+        <span className={styles.perNight}>/ đêm</span>
+      </div>
 
-      <button className={styles.bookBtn} onClick={() => setShowModal(true)}>
-        Đặt ngay
-      </button>
+      <div className={styles.ctaRow}>
+        <button className={styles.bookBtn} onClick={() => setShowModal(true)}>
+          Đặt ngay
+        </button>
+        <button className={styles.secondaryBtn}>
+          <FaRegClock /> Giữ chỗ 15 phút
+        </button>
+      </div>
 
-      <ModalBooking
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        room={room}
-      />
+      <div className={styles.divider} />
+
+      {/* Tiện nghi nổi bật (nhìn gọn gàng) */}
+      <section className={styles.amenities}>
+        <h3>Tiện nghi nổi bật</h3>
+        <ul>
+          {room.amenities?.wifi && <li><FaWifi /> Wifi miễn phí</li>}
+          {room.amenities?.airConditioning && <li><FaSnowflake /> Máy lạnh</li>}
+          {room.amenities?.nonSmoking && <li><FaSmokingBan /> Không hút thuốc</li>}
+          {room.amenities?.hairDryer && <li><FaWind /> Máy sấy tóc</li>}
+          {room.amenities?.petsAllowed && <li><FaDog /> Thú cưng được phép</li>}
+        </ul>
+      </section>
+
+      <ModalBooking show={showModal} onClose={() => setShowModal(false)} room={room} />
     </div>
   );
 };

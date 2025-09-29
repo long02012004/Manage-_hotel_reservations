@@ -1,35 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Table, Button, Form } from "react-bootstrap";
-import { mockRooms } from "../../../services/mockRooms";
 import styles from "./ManageRooms.module.scss";
 import ModalAddRoom from "./ModalAddRoom";
 import ModalEditRoom from "./ModalEditRoom";
 import ModalViewRoom from "./ModalViewRoom";
+import { getRooms, deleteRoom } from "../../../services/AppService";
 
 const ManageRooms = () => {
-  const [rooms, setRooms] = useState(mockRooms);
+  const [rooms, setRooms] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
 
-  const handleDelete = (id) => {
+  // 📌 Lấy danh sách phòng từ API
+  useEffect(() => {
+    fetchRooms();
+  }, []);
+
+  const fetchRooms = async () => {
+    try {
+      const res = await getRooms({ page: 0, limit: 20 });
+      setRooms(res.data || []);
+    } catch (err) {
+      console.error("❌ Lỗi khi lấy danh sách phòng:", err);
+    }
+  };
+
+  const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc muốn xóa phòng này?")) {
-      setRooms(rooms.filter((r) => r.id !== id));
+      try {
+        await deleteRoom(id);
+        fetchRooms(); // load lại danh sách sau khi xóa
+      } catch (err) {
+        console.error("❌ Lỗi khi xóa phòng:", err);
+      }
     }
   };
 
   const handleSearch = (e) => setSearch(e.target.value);
 
   const filteredRooms = rooms.filter((r) =>
-    r.title.toLowerCase().includes(search.toLowerCase())
+    r.title?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className={styles.manageRooms}>
       <h3>Quản lý phòng</h3>
 
+      {/* Thanh tìm kiếm + nút thêm */}
       <div className={styles.topBar}>
         <Form.Control
           type="text"
@@ -43,6 +63,7 @@ const ManageRooms = () => {
         </Button>
       </div>
 
+      {/* Bảng danh sách phòng */}
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -50,7 +71,7 @@ const ManageRooms = () => {
             <th>Tên phòng</th>
             <th>Số khách</th>
             <th>Giá</th>
-            <th>Trạng thái</th>
+            <th>Địa chỉ</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -60,8 +81,8 @@ const ManageRooms = () => {
               <td>{idx + 1}</td>
               <td>{r.title}</td>
               <td>{r.guests}</td>
-              <td>{r.price.toLocaleString()} VND</td>
-              <td>{r.status || "Available"}</td>
+              <td>{r.price?.toLocaleString()} VND</td>
+              <td>{r.address}</td>
               <td>
                 <Button
                   variant="info"
@@ -102,16 +123,14 @@ const ManageRooms = () => {
       {showAdd && (
         <ModalAddRoom
           onClose={() => setShowAdd(false)}
-          onSave={(newRoom) => setRooms([...rooms, newRoom])}
+          onSave={fetchRooms} // gọi lại API sau khi thêm
         />
       )}
       {showEdit && selectedRoom && (
         <ModalEditRoom
           room={selectedRoom}
           onClose={() => setShowEdit(false)}
-          onSave={(updated) =>
-            setRooms(rooms.map((r) => (r.id === updated.id ? updated : r)))
-          }
+          onSave={fetchRooms} // gọi lại API sau khi sửa
         />
       )}
       {showView && selectedRoom && (

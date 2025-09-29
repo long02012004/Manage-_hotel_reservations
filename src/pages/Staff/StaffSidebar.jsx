@@ -9,6 +9,8 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { TbBrandBooking } from "react-icons/tb";
+
 import styles from "./StaffSidebar.module.scss";
 import { logo } from "../../assets/images/img";
 
@@ -41,6 +43,11 @@ const Sidebar = () => {
       path: "/staff/prices",
       icon: <FaTags />, // Giá & khuyến mãi
       label: "Quản lý giá và khuyến mãi",
+    },
+    {
+      path: "/staff/bookings",
+      icon: <TbBrandBooking />, // Quản lý đặt phòng
+      label: "Quản lý đặt phòng",
     },
     {
       path: "/staff/settings",

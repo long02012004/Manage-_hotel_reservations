@@ -25,11 +25,19 @@ import ManageReviews from "./pages/Staff/Content/ManageReviews.jsx";
 import ManageCustomers from "./pages/Staff/Content/ManageCustomers.jsx";
 import ManageContent from "./pages/Staff/Content/ManageContent.jsx";
 import ManagePrices from "./pages/Staff/Content/ManagePrices.jsx";
+import ManageBooking from "./pages/Staff/Content/ManageBooking.jsx";
 
 // Toast
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const NotFound = () => {
+  return (
+    <div className="alert alert-danger">
+      404.Not found data with your current URL
+    </div>
+  );
+};
 const Layout = () => {
   return (
     <>
@@ -61,12 +69,14 @@ const Layout = () => {
           <Route path="customers" element={<ManageCustomers />} />
           <Route path="content" element={<ManageContent />} />
           <Route path="prices" element={<ManagePrices />} />
+          <Route path="bookings" element={<ManageBooking />} />
         </Route>
 
         {/* ================= Auth / Other Routes ================= */}
         <Route path="sign-up" element={<SignUp />} />
         <Route path="login" element={<Login />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <ToastContainer

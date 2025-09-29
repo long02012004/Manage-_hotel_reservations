@@ -12,13 +12,10 @@ const LogIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
 
-
-   const validatePhone = (phone) => {
+  const validatePhone = (phone) => {
     return /^(0|\+84)[0-9]{9,10}$/.test(phone); // Regex cho số điện thoại VN
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // ✅ chặn reload mặc định
@@ -36,20 +33,24 @@ const LogIn = () => {
 
     try {
       let res = await postLogin({
-        phone_number: phone, password
+        phone_number: phone,
+        password,
       });
-       if (res && res.status === 200) {
+      console.log("res:", res);
+      const token = res?.data?.token;
+      if (res && res.status === 200) {
+        console.log("token:", token); // giờ sẽ log ra
+        localStorage.setItem("token", token);
         dispatch(doLogin(res.data));
-
-              toast.success("Đăng nhập thành công!");
-              navigate("/");
-            } else {
-              toast.error("Đăng nhập thất bại!");
-            }
-          } catch (err) {
-            console.error("Login error:", err);
-            toast.error("Có lỗi xảy ra khi đăng nhập!");
-          }finally{
+        toast.success("Đăng nhập thành công!");
+        navigate("/");
+      } else {
+        toast.error("Đăng nhập thất bại!");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("Có lỗi xảy ra khi đăng nhập!");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -79,7 +80,11 @@ const LogIn = () => {
             />
             <label htmlFor="password">Password</label>
           </div>
-          <button type="submit" className={styles["login-btn"] } disabled={isLoading}>
+          <button
+            type="submit"
+            className={styles["login-btn"]}
+            disabled={isLoading}
+          >
             {isLoading ? "Loading..." : "Đăng nhập"}
           </button>
         </form>
@@ -98,5 +103,4 @@ const LogIn = () => {
 
 export default LogIn;
 
-
-// 
+//
