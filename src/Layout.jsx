@@ -12,6 +12,7 @@ import SignUp from "./pages/Auth/SignUp/SignUp.jsx";
 import ViewRoom from "./pages/User/ViewRoom/ViewRoom.jsx";
 import RoomDetail from "./pages/User/ViewRoom/RoomDetail.jsx";
 import Contact from "./pages/User/Contact/Contact.jsx";
+import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword.jsx";
 
 // Admin
 import AdminLayout from "./pages/Admin/AdminLayout.jsx";
@@ -76,6 +77,7 @@ const Layout = () => {
         <Route path="sign-up" element={<SignUp />} />
         <Route path="login" element={<Login />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 

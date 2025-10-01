@@ -6,42 +6,47 @@ export const postLogin = (data) => axios.post("/users/login", data);
 // API đăng ký
 export const postSignUp = (data) => axios.post("/users/register", data);
 
-// API lấy danh sách phòng
-export const getRooms = (params = { page: 0, limit: 20 }) =>
-  axios.get("/rooms", { params });
-
-// API lấy chi tiết phòng
-export const getRoomById = (id) => axios.get(`/rooms/${id}`);
-
 //api lấy danh sách nhân viên
-export const getAllStaff = (params = { page: 0, limit: 20 }) =>
-  axios.get("/users/admin/manage-staff", { params });
-
+export const getAllStaff = (params = { page: 0, limit: 60 }) =>
+  axios.get("/admins/users/all-staff", { params });
 // API tạo nhân viên
 export const createStaff = (formData) =>
-  axios.post("/users", formData, {
+  axios.post("/admins/users", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-
-// API tạo phòng
-export const createRoom = (formData) =>
-  axios.post("/rooms", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-
 // API cập nhật nhân viên
 export const updateStaff = (id, formData) =>
   axios.put(`/users/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 // API xóa nhân viên
-export const deleteStaff = (id) => axios.delete(`/users/${id}`);
+export const deleteStaff = (id) => axios.delete(`/staff/users/${id}`);
 
-// API xóa phòng 
-export const deleteRoom = (id) => axios.delete(`/rooms/${id}`);
+// API lấy danh sách phòng
+export const getRooms = (params = { page: 0, limit: 20 }) =>
+  axios.get("/rooms", { params });
+// API xem chi tiết phòng lỗi ảnh
+export const getRoomById = (id) => axios.get(`/rooms/${id}`);
+// API tạo phòng
+export const createRoom = (formData) =>
+  axios.post("/staff/rooms", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+// API xóa phòng
+export const deleteRoom = (id) => axios.delete(`/staff/rooms/${id}`);
+
 // Lấy danh sách tất cả khách hàng (dành cho nhân viên)
-export const getAllCustomers = () => axios.get("/customers/staff");
-
+export const getAllCustomers = (params = { page: 0, limit: 200 }) =>
+  axios.get("/staff/customers", { params });
+// API lấy chi tiết khách hàng theo id
+export const getCustomerById = (id) => axios.get(`/staff/customers/${id}`);
+// Thêm mới khách hàng
+export const createCustomer = (data) => axios.post("/customers", data);
+// Xóa khách hàng chưa có
+export const deleteCustomer = (id) => axios.delete(`/customers/${id}`);
+// API khóa/mở khách hàng
+export const toggleCustomerActive = (id, active) =>
+  axios.put(`/customers/active/${id}?active=${active}`);
 
 // API lấy danh sách đặt phòng chưa có
 export const getAllBookings = (params = { page: 0, limit: 10 }) =>

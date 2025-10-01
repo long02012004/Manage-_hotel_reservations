@@ -89,7 +89,9 @@ const LogIn = () => {
           </button>
         </form>
         <div className={styles["forgot-password"]}>
-          <span>Quên mật khẩu</span>
+          <Link to="/forgot-password" className={styles["forgot-password-link"]}>
+            Quên mật khẩu
+          </Link>
           <span>
             <Link to="/sign-up" className={styles["sign-up"]}>
               Đăng ký

@@ -23,7 +23,7 @@ const ManageStaff = () => {
 
   const fetchStaff = async () => {
     try {
-      const res = await getAllStaff({ page: 0, limit: 30 });
+      const res = await getAllStaff({ page: 0, limit: 60 });
       setStaffList(res.data);
       setSearchResult(res.data);
     } catch (err) {
