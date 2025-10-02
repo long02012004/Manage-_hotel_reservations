@@ -34,7 +34,7 @@ const CustomerManager = () => {
       const res = await getAllCustomers();
       setCustomers(res.data || []); // ✅ lấy mảng content
     } catch (err) {
-      toast.error("❌ Lỗi khi lấy danh sách khách hàng");
+      toast.error(" Lỗi khi lấy danh sách khách hàng");
     }
   };
 
@@ -42,10 +42,10 @@ const CustomerManager = () => {
     if (window.confirm("Bạn có chắc muốn xóa khách hàng này?")) {
       try {
         await deleteCustomer(id);
-        toast.success("✅ Xóa khách hàng thành công!");
+        toast.success(" Xóa khách hàng thành công!");
         fetchCustomers();
       } catch (err) {
-        toast.error("❌ Lỗi khi xóa khách hàng");
+        toast.error(" Lỗi khi xóa khách hàng");
       }
     }
   };
@@ -55,11 +55,11 @@ const CustomerManager = () => {
       const newStatus = c.active === 1 ? 0 : 1;
       await toggleCustomerActive(c.customerId, newStatus);
       toast.success(
-        newStatus === 0 ? "🔒 Đã khóa khách hàng" : "🔓 Đã mở khóa khách hàng"
+        newStatus === 0 ? " Đã khóa khách hàng" : " Đã mở khóa khách hàng"
       );
       fetchCustomers();
     } catch (err) {
-      toast.error("❌ Lỗi khi cập nhật trạng thái");
+      toast.error(" Lỗi khi cập nhật trạng thái");
     }
   };
 
@@ -103,68 +103,75 @@ const CustomerManager = () => {
           </tr>
         </thead>
         <tbody>
-          {paginated.map((c, index) => (
-            <tr key={index}>
-              <td>{c.customerId}</td>
-              <td>
-                <img
-                  src={
-                    c.img ? `${API_HOST}${c.img}` : "https://placehold.co/50x50"
-                  }
-                  alt={c.name}
-                  style={{ width: "50px", borderRadius: "8px" }}
-                />
-              </td>
-              <td>{c.name}</td>
-              <td>{c.email}</td>
-              <td>{c.phone}</td>
-              <td>
-                {c.active === 1 ? (
-                  <span className="badge bg-success">Hoạt động</span>
-                ) : (
-                  <span className="badge bg-secondary">Đã khóa</span>
-                )}
-              </td>
-              <td>
-                <div className="d-flex gap-2 justify-content-center flex-wrap">
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    onClick={() => {
-                      setSelectedCustomer(c);
-                      setShowView(true);
-                    }}
-                  >
-                    <i className="bi bi-eye"></i> Xem
-                  </Button>
-
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => handleDelete(c.customerId)}
-                  >
-                    <i className="bi bi-trash"></i> Xóa
-                  </Button>
-
-                  <Button
-                    size="sm"
-                    variant={c.active === 1 ? "secondary" : "success"}
-                    onClick={() => handleLockToggle(c)}
-                  >
+          {paginated.map(
+            (c, index) => (
+              console.log(c.img),
+              (
+                <tr key={index}>
+                  <td>{c.customerId}</td>
+                  <td>
+                    <img
+                      src={
+                        c.img
+                          ? `${API_HOST}${c.img}` // nối host + relative path
+                          : "https://placehold.co/50x50"
+                      }
+                      alt={c.name}
+                      style={{ width: "50px", borderRadius: "8px" }}
+                    />
+                  </td>
+                  <td>{c.name}</td>
+                  <td>{c.email}</td>
+                  <td>{c.phone}</td>
+                  <td>
                     {c.active === 1 ? (
-                      <>
-                        <i className="bi bi-lock"></i> Khóa
-                      </>
+                      <span className="badge bg-success">Hoạt động</span>
                     ) : (
-                      <>
-                        <i className="bi bi-unlock"></i> Mở khóa
-                      </>
+                      <span className="badge bg-secondary">Đã khóa</span>
                     )}
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          ))}
+                  </td>
+                  <td>
+                    <div className="d-flex gap-2 justify-content-center flex-wrap">
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        onClick={() => {
+                          setSelectedCustomer(c);
+                          setShowView(true);
+                        }}
+                      >
+                        <i className="bi bi-eye"></i> Xem
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={() => handleDelete(c.customerId)}
+                      >
+                        <i className="bi bi-trash"></i> Xóa
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant={c.active === 1 ? "secondary" : "success"}
+                        onClick={() => handleLockToggle(c)}
+                      >
+                        {c.active === 1 ? (
+                          <>
+                            <i className="bi bi-lock"></i> Khóa
+                          </>
+                        ) : (
+                          <>
+                            <i className="bi bi-unlock"></i> Mở khóa
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            )
+          )}
         </tbody>
       </Table>
 

@@ -43,10 +43,10 @@ export const getCustomerById = (id) => axios.get(`/staff/customers/${id}`);
 // Thêm mới khách hàng
 export const createCustomer = (data) => axios.post("/customers", data);
 // Xóa khách hàng chưa có
-export const deleteCustomer = (id) => axios.delete(`/customers/${id}`);
+export const deleteCustomer = (id) => axios.delete(`/staff/customers/${id}`);
 // API khóa/mở khách hàng
 export const toggleCustomerActive = (id, active) =>
-  axios.put(`/customers/active/${id}?active=${active}`);
+  axios.put(`/staff/customers/active/${id}?active=${active}`);
 
 // API lấy danh sách đặt phòng chưa có
 export const getAllBookings = (params = { page: 0, limit: 10 }) =>

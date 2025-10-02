@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Form, Image, Row, Col } from "react-bootstrap";
 import styles from "./EditStaffModal.module.scss";
 import { updateStaff } from "../../../services/AppService"; // API PUT /users/{id}
+import { toast } from "react-toastify";
 
 const EditStaffModal = ({ show, onHide, staff, onUpdated }) => {
   const [updatedStaff, setUpdatedStaff] = useState({
@@ -82,9 +83,11 @@ const EditStaffModal = ({ show, onHide, staff, onUpdated }) => {
       await updateStaff(updatedStaff.id, formData);
 
       if (onUpdated) onUpdated(); // reload danh sách
+      toast.success("Cập nhật nhân viên thành công!");
       onHide();
+
     } catch (err) {
-      console.error("Lỗi khi update staff:", err);
+      toast.error("Cập nhật nhân viên thất bại!");
     }
   };
 

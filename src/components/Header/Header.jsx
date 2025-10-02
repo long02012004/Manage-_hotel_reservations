@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { logo, avatar } from "../../assets/images/img";
+import { logo, avatar_blog } from "../../assets/images/img";
 import styles from "./Header.module.scss";
 import { useSelector     } from "react-redux";
 
@@ -103,7 +103,7 @@ const Header = () => {
                 <li className={styles.nav__item}>
                   <Link className={styles.nav__link} to="/profile">
                     <img
-                      src={avatar}
+                      src={avatar_blog}
                       alt="Avatar"
                       style={{
                         width: 30,
@@ -112,7 +112,7 @@ const Header = () => {
                         marginRight: 8,
                       }}
                     />
-                    <span>{account?.username || "Người dùng"}</span>
+                    <span>{account?.username || "Phước Long"}</span>
                   </Link>
                 </li>
                 <li className={styles.nav__item}>

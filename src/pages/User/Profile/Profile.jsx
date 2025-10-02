@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import styles from "./Profile.module.scss";
 import { avatar_blog } from "../../../assets/images/img";
+import { toast } from "react-toastify";
+
 
 const ProfilePage = () => {
   const [user, setUser] = useState({
-    name: "Nguyễn Văn A",
-    email: "vana@example.com",
+    name: "Đinh Văn Phước Lóng",
+    email: "phuoclong@example.com",
     phone: "0123456789",
     avatar: "./163235629_912992962795594_4479437655339829675_n.jpg",
   });
@@ -21,6 +23,7 @@ const ProfilePage = () => {
   const handleSave = () => {
     setUser(form);
     setShowModal(false);
+    toast.success("Cập nhật thông tin thành công!");
   };
 
   return (
@@ -75,39 +78,62 @@ const ProfilePage = () => {
           className={styles.modalOverlay}
           onClick={() => setShowModal(false)}
         >
-          <div
-            className={styles.modal}
-            onClick={(e) => e.stopPropagation()} // chặn click trong modal
-          >
-            <h2>Chỉnh sửa thông tin</h2>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Họ và tên"
-            />
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-            <input
-              type="text"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="Số điện thoại"
-            />
-            <input
-              type="text"
-              name="avatar"
-              value={form.avatar}
-              onChange={handleChange}
-              placeholder="Link ảnh đại diện"
-            />
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            {/* Avatar + tên */}
+            <div className={styles.modalHeader}>
+              <img
+                src={form.avatar || avatar_blog}
+                alt="Avatar"
+                className={styles.modalAvatar}
+              />
+              <h2>{form.name}</h2>
+              <p>{form.email}</p>
+            </div>
+
+            <form className={styles.form}>
+              <label>
+                Họ và tên
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                Email
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                Số điện thoại
+                <input
+                  type="text"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                Link ảnh đại diện
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const imageUrl = URL.createObjectURL(file);
+                      setForm({ ...form, avatar: imageUrl });
+                    }
+                  }}
+                  className={styles.fileInput}
+                />
+              </label>
+            </form>
 
             <div className={styles.btnGroup}>
               <button onClick={handleSave}>Lưu</button>

@@ -14,6 +14,7 @@ import {
 export const mockRooms = [
   {
     id: 1,
+    name: "Bảo Long",
     image: hotel1,
     gallery: [hotel1, hotel2, hotel3, hotel4],
     title: "Deluxe Ocean View",
@@ -30,8 +31,8 @@ export const mockRooms = [
     discount: 20,
     booking: {
       nights: 2,
-      checkIn: "2025-09-01",
-      checkOut: "2025-09-03",
+      checkIn: "2025-08-01",
+      checkOut: "2025-08-03",
       checkInDetail: "Thứ Hai từ 14:00",
       checkOutDetail: "Thứ Tư đến 12:00",
     },
@@ -62,6 +63,7 @@ export const mockRooms = [
   },
   {
     id: 2,
+    name: "Quang Long",
     image: hotel2,
     gallery: [hotel2, hotel3, hotel4],
     title: "Superior Garden Room",
@@ -78,8 +80,8 @@ export const mockRooms = [
     discount: 18,
     booking: {
       nights: 3,
-      checkIn: "2025-09-05",
-      checkOut: "2025-09-08",
+      checkIn: "2025-01-05",
+      checkOut: "2025-01-08",
       checkInDetail: "Thứ Năm từ 14:00",
       checkOutDetail: "Chủ Nhật đến 12:00",
     },
@@ -92,6 +94,7 @@ export const mockRooms = [
   },
   {
     id: 3,
+    name: "Phước Long",
     image: hotel3,
     gallery: [hotel3, hotel4, hotel5],
     title: "Premium Suite City View",
@@ -108,8 +111,8 @@ export const mockRooms = [
     discount: 17,
     booking: {
       nights: 2,
-      checkIn: "2025-09-07",
-      checkOut: "2025-09-09",
+      checkIn: "2025-02-07",
+      checkOut: "2025-02-09",
       checkInDetail: "Thứ Bảy từ 14:00",
       checkOutDetail: "Thứ Hai đến 12:00",
     },
@@ -121,6 +124,7 @@ export const mockRooms = [
   },
   {
     id: 4,
+    name: "Cẩm Ly",
     image: hotel4,
     gallery: [hotel4, hotel5, hotel6],
     title: "Wink Luxe Family Room",
@@ -150,6 +154,7 @@ export const mockRooms = [
   },
   {
     id: 5,
+    name: "Văn Thắng",
     image: hotel5,
     gallery: [hotel5, hotel6, hotel7],
     title: "Standard Twin Room",
@@ -166,8 +171,8 @@ export const mockRooms = [
     discount: 20,
     booking: {
       nights: 1,
-      checkIn: "2025-09-12",
-      checkOut: "2025-09-13",
+      checkIn: "2025-07-12",
+      checkOut: "2025-07-13",
       checkInDetail: "Thứ Năm từ 14:00",
       checkOutDetail: "Thứ Sáu đến 12:00",
     },
@@ -179,6 +184,7 @@ export const mockRooms = [
   },
   {
     id: 6,
+    name: "Minh Khang",
     image: hotel6,
     gallery: [hotel6, hotel7, hotel8],
     title: "Executive Suite Oceanfront",
@@ -195,8 +201,8 @@ export const mockRooms = [
     discount: 14,
     booking: {
       nights: 5,
-      checkIn: "2025-09-15",
-      checkOut: "2025-09-20",
+      checkIn: "2025-10-15",
+      checkOut: "2025-10-20",
       checkInDetail: "Chủ Nhật từ 14:00",
       checkOutDetail: "Thứ Sáu đến 12:00",
     },
@@ -208,6 +214,7 @@ export const mockRooms = [
   },
   {
     id: 7,
+    name: "Thùy Dương",
     image: hotel7,
     gallery: [hotel7, hotel8, hotel9],
     title: "Penthouse Luxury Villa",
@@ -237,6 +244,7 @@ export const mockRooms = [
   },
   {
     id: 8,
+    name: "Ngọc Trinh",
     image: hotel8,
     gallery: [hotel8, hotel9, hotel1],
     title: "Studio Apartment",
@@ -266,6 +274,7 @@ export const mockRooms = [
   },
   {
     id: 9,
+    name: "Hồng Nhung",
     image: hotel9,
     gallery: [hotel9, hotel1, hotel2],
     title: "Junior Suite Garden View",

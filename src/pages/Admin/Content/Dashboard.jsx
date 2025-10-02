@@ -92,7 +92,7 @@ const Dashboard = () => {
   // ================== Bảng chi tiết booking ==================
   const tableData = filteredRooms.map((room) => ({
     id: room.id,
-    customer: `Khách hàng ${room.id}`,
+    customer: `Khách hàng ${room.name}`,
     room: room.title,
     checkIn: room.booking.checkIn,
     checkOut: room.booking.checkOut,
@@ -104,7 +104,10 @@ const Dashboard = () => {
   const exportToExcel = () => {
     // Sheet 1: Thống kê
     const summary = [
-      { ChỉTiêu: "Doanh thu tháng " + month + "/" + year, GiáTrị: totalRevenue },
+      {
+        ChỉTiêu: "Doanh thu tháng " + month + "/" + year,
+        GiáTrị: totalRevenue,
+      },
       { ChỉTiêu: "Số lượng booking", GiáTrị: totalBookings },
       { ChỉTiêu: "Phòng trống", GiáTrị: emptyRooms },
     ];

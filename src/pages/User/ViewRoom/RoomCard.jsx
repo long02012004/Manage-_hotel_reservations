@@ -12,6 +12,8 @@ import { TbAirConditioning } from "react-icons/tb";
 import { CiWifiOn, CiGift } from "react-icons/ci";
 import { MdFoodBank, MdOutlineCancel, MdPayment } from "react-icons/md";
 import { Link } from "react-router-dom";
+import ModalBooking from "./ModalBooking";
+import { useState } from "react";
 
 const RoomCard = ({
   id,
@@ -28,6 +30,7 @@ const RoomCard = ({
   discount,
   amenities = {},
 }) => {
+  const [showModal, setShowModal] = useState(false);
   return (
     <div className={styles["room-card"]}>
       <div className={styles["room-image"]}>
@@ -115,19 +118,32 @@ const RoomCard = ({
           </ul>
 
           <div className={styles["price-box"]}>
-            <p className={styles["sub-price"]}>
-              Đăng ký và thanh toán <b>{price}₫</b>
-            </p>
-            <p className={styles["main-price"]}>
+            <div className={styles["top-row"]}>
               {oldPrice && (
-                <span className={styles["old-price"]}>{oldPrice}₫</span>
+                <span className={styles["old-price"]}>
+                  {Number(oldPrice).toLocaleString("vi-VN")}₫
+                </span>
               )}
               {discount && (
                 <span className={styles["discount"]}>-{discount}%</span>
               )}
-              <span className={styles["final-price"]}>{price}₫</span>
-            </p>
-            <button className={styles["choose-btn"]}>Đặt</button>
+            </div>
+
+            <span className={styles["final-price"]}>
+              {Number(price).toLocaleString("vi-VN")}₫
+            </span>
+
+            <button
+              className={styles["choose-btn"]}
+              onClick={() => setShowModal(true)}
+            >
+              Đặt ngay
+            </button>
+            <ModalBooking
+              show={showModal}
+              onClose={() => setShowModal(false)}
+              room={{ id, image, title, price, oldPrice, discount }}
+            />
           </div>
         </div>
       </div>

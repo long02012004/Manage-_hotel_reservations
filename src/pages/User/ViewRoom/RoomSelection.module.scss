@@ -74,7 +74,7 @@
 
 .room-card {
   display: grid;
-  grid-template-columns: 250px 1fr 250px;
+  grid-template-columns: 450px 1fr 50px;
   gap: 20px;
   border: 1px solid #eee;
   border-radius: 8px;
@@ -87,7 +87,7 @@
 
   .room-image img {
     width: 100%;
-    height: 200px;
+    height: 420px;
     object-fit: cover;
     border-radius: 8px;
   }
@@ -168,57 +168,67 @@
       }
     }
 
-    .price-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fdeaea;
-      border: 1px solid #f4c7c3;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 10px;
+.price-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  text-align: right;
 
-      .sub-price {
-        font-size: 12px;
-        color: #777;
-      }
+  .old-price {
+    font-size: 13px;
+    color: #999;
+    text-decoration: line-through;
+    margin-right: 6px;
+  }
 
-      .main-price {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+  .discount {
+    background: #ff5252;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
 
-        .old-price {
-          text-decoration: line-through;
-          color: #999;
-          font-size: 12px;
-        }
-        .discount {
-          color: #c62828;
-          font-weight: bold;
-          font-size: 12px;
-        }
-        .final-price {
-          font-size: 16px;
-          font-weight: bold;
-          color: #c62828;
-        }
-      }
+  .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 100%;
+  }
 
-      .choose-btn {
-        background: #c62828;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 14px;
+  .final-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #c62828;
+  }
 
-        &:hover {
-          background: #a62222;
-        }
-      }
+  .choose-btn {
+    margin-top: 8px;
+    width: 100%;
+    background: linear-gradient(90deg, #ff6b6b, #c62828);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      opacity: 0.9;
     }
+  }
+}
+
+
+
 
     .view-all-btn {
       border: 1px solid #c62828;
