@@ -126,16 +126,16 @@ const ManageRooms = () => {
         <ModalAddRoom
           onClose={() => setShowAdd(false)}
           onSave={fetchRooms} // gọi lại API sau khi thêm
-          
         />
       )}
       {showEdit && selectedRoom && (
         <ModalEditRoom
           room={selectedRoom}
           onClose={() => setShowEdit(false)}
-          onSave={fetchRooms} // gọi lại API sau khi sửa
+          onUpdated={fetchRooms} // <-- gọi lại fetchRooms khi update thành công
         />
       )}
+
       {showView && selectedRoom && (
         <ModalViewRoom
           show={showView}

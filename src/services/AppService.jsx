@@ -1,4 +1,5 @@
 import axios from "../utils/AxiosCustomize.jsx";
+import instance from "../utils/AxiosCustomize.jsx"; // đường dẫn file instance
 
 // API đăng nhập
 export const postLogin = (data) => axios.post("/users/login", data);
@@ -34,7 +35,11 @@ export const createRoom = (formData) =>
   });
 // API xóa phòng
 export const deleteRoom = (id) => axios.delete(`/staff/rooms/${id}`);
-
+// Api sửa phòng
+export const updateRoom = (id, formData) =>
+  instance.put(`/staff/rooms/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 // Lấy danh sách tất cả khách hàng (dành cho nhân viên)
 export const getAllCustomers = (params = { page: 0, limit: 200 }) =>
   axios.get("/staff/customers", { params });
