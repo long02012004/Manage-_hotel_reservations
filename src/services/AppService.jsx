@@ -67,3 +67,10 @@ export const getReviewsByRoomId = (roomId) => axios.get(`/reviews/${roomId}`);
 // Lấy danh sách giá phòng
 export const getAllPrices = (params = { page: 0, limit: 20 }) =>
   axios.get("/staff/price", { params });
+// API lấy chi tiết thông tin user hiện tại
+
+export const getUserDetails = (token) => {
+  return axios.post(`/users/details`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};

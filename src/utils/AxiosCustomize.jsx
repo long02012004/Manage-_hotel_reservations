@@ -3,7 +3,6 @@ import axios from "axios";
 // Đặt baseURL lấy từ .env để dễ đổi khi deploy
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8088/api/v1",
-  // ❌ bỏ phần headers cứng application/json đi
 });
 
 // Gắn token vào mọi request nếu có

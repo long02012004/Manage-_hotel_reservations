@@ -2,37 +2,56 @@ import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { logo, avatar_blog } from "../../assets/images/img";
 import styles from "./Header.module.scss";
-import { useSelector     } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const account = useSelector((state) => state.user.account);
 
+  // Logout
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-
+    dispatch({ type: "LOGOUT_USER" });
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
-  const handleClickLogin = () => {
-    navigate("/login");
-  };
+  const handleClickLogin = () => navigate("/login");
+  const handleClickSignUp = () => navigate("/sign-up");
 
-  const handleClickSignUp = () => {
-    navigate("/sign-up");
-  };
-
-  // đổi màu header khi cuộn
+  // Scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 0);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Render menu theo role
+  const renderRoleMenu = () => {
+    if (!account?.role) return null;
+
+    if (account.role === "admin") {
+      return (
+        <li className={styles.nav__item}>
+          <NavLink className={styles.nav__link} to="/admins/dashboard">
+            Quản trị
+          </NavLink>
+        </li>
+      );
+    } else if (account.role === "staff") {
+      return (
+        <li className={styles.nav__item}>
+          <NavLink className={styles.nav__link} to="/staff/rooms">
+            Nhân viên
+          </NavLink>
+        </li>
+      );
+    }
+    return null; // user bình thường không có menu
+  };
 
   return (
     <div className={styles["header-container"]}>
@@ -47,7 +66,6 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Navigation */}
         <nav className={styles.header__nav}>
           <ul className={styles.nav}>
             <li className={styles.nav__item}>
@@ -80,50 +98,40 @@ const Header = () => {
                 Liên Hệ
               </NavLink>
             </li>
+
+            {/* Language */}
             <li className={`${styles.nav__item} ${styles.nav__lang}`}>
               <span className={styles.nav__link} tabIndex={0}>
                 Tiếng Việt <i className="bx bx-chevron-down"></i>
                 <ul className={styles.nav__subnav}>
-                  <li>
-                    <a href="#">Tiếng Anh</a>
-                  </li>
-                  <li>
-                    <a href="#">Tiếng Hàn</a>
-                  </li>
-                  <li>
-                    <a href="#">Tiếng Trung</a>
-                  </li>
+                  <li><a href="#">Tiếng Anh</a></li>
+                  <li><a href="#">Tiếng Hàn</a></li>
+                  <li><a href="#">Tiếng Trung</a></li>
                 </ul>
               </span>
             </li>
 
-            {/* Auth Buttons */}
+            {/* Auth Buttons / User Info */}
             {isAuthenticated ? (
               <>
                 <li className={styles.nav__item}>
                   <Link className={styles.nav__link} to="/profile">
                     <img
-                      src={avatar_blog}
+                      src={account.image || avatar_blog}
                       alt="Avatar"
-                      style={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: "50%",
-                        marginRight: 8,
-                      }}
+                      style={{ width: 30, height: 30, borderRadius: "50%", marginRight: 8 }}
                     />
-                    <span>{account?.username || "Phước Long"}</span>
+                    <span>{account.username}</span>
                   </Link>
                 </li>
+
+                {renderRoleMenu()}
+
                 <li className={styles.nav__item}>
                   <button
                     className={styles.nav__link}
                     onClick={handleLogout}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
+                    style={{ background: "none", border: "none", cursor: "pointer" }}
                   >
                     Đăng xuất
                   </button>
@@ -132,18 +140,12 @@ const Header = () => {
             ) : (
               <>
                 <li className={styles.nav__item}>
-                  <button
-                    className={styles.nav__btn}
-                    onClick={handleClickLogin}
-                  >
+                  <button className={styles.nav__btn} onClick={handleClickLogin}>
                     Đăng nhập
                   </button>
                 </li>
                 <li className={styles.nav__item}>
-                  <button
-                    className={styles.nav__btn}
-                    onClick={handleClickSignUp}
-                  >
+                  <button className={styles.nav__btn} onClick={handleClickSignUp}>
                     Đăng ký
                   </button>
                 </li>

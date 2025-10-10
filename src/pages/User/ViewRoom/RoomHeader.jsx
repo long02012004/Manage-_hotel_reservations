@@ -12,30 +12,7 @@ const RoomHeader = ({ setRooms }) => {
   const [date, setDate] = useState(new Date());
   const [guests, setGuests] = useState("1");
   const [priceRange, setPriceRange] = useState("0-500000");
-  /*   const handleSearch = async () => {
-    const requestData = {
-      checkIn: date.toISOString().split("T")[0], // "yyyy-mm-dd"
-      guests,
-      priceRange,
-    };
 
-    try {
-      const res = await postSearchRooms(requestData);// này là gọi api  
-      toast.success("Tìm kiếm thành công!");
-      console.log("Kết quả từ BE:", res.data);
-
-      // truyền dữ liệu xuống RoomSelection
-      if (res.data && res.data.rooms) {
-        setRooms(res.data.rooms);
-      } else {
-        setRooms([]);
-      }
-    } catch (err) {
-      toast.error("Lỗi khi tìm kiếm phòng");
-      console.error("API error:", err);
-      setRooms([]);
-    }
-  }; */
   const handleSearch = async () => {
     try {
       // Dùng mock data thay vì gọi BE
@@ -53,7 +30,7 @@ const RoomHeader = ({ setRooms }) => {
       });
 
       setRooms(filtered);
-      toast.success("Tìm kiếm thành công (mock)!");
+      toast.success("Tìm kiếm thành công!");
     } catch {
       toast.error("Lỗi khi tìm kiếm phòng");
       setRooms([]);

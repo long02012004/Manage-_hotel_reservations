@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { backgroundSignUp, flag, rocket } from "../../../assets/images/img";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,6 +5,8 @@ import styles from "./SignUp.module.scss";
 import { postSignUp } from "../../../services/AppService";
 import { toast } from "react-toastify";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { useDispatch } from "react-redux";
+import { doLogin } from "../../../redux/action/userAction";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ const SignUp = () => {
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [isPolicyChecked, setIsPolicyChecked] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const validateEmail = (email) => {
     return String(email)
@@ -35,7 +37,9 @@ const SignUp = () => {
     e.preventDefault();
 
     if (!email || !phone_number || !password || !fullname) {
-      toast.error("Vui lòng nhập đầy đủ Họ tên, Email, Số điện thoại và Mật khẩu!");
+      toast.error(
+        "Vui lòng nhập đầy đủ Họ tên, Email, Số điện thoại và Mật khẩu!"
+      );
       return;
     }
     if (!validateEmail(email)) {
@@ -66,21 +70,27 @@ const SignUp = () => {
         role_id: 1,
       });
 
-//       {
-//   "fullname": "pham thang",
-//   "phone_number": "0702389151",
-//   "email": "admin@gmail.com",
-//   "password": "123456",
-//   "retype_password": "123456",
-//   "date_of_birth": "1990-01-01",
-//   "facebook_account_id": 0,
-//   "google_account_id": 0,
-//   "role_id": 2
-// }
-
-
+      //       {
+      //   "fullname": "pham thang",
+      //   "phone_number": "0702389151",
+      //   "email": "admin@gmail.com",
+      //   "password": "123456",
+      //   "retype_password": "123456",
+      //   "date_of_birth": "1990-01-01",
+      //   "facebook_account_id": 0,
+      //   "google_account_id": 0,
+      //   "role_id": 2
+      // }
       if (res && res.status === 200) {
         toast.success("Đăng ký thành công!");
+
+        // 1. Lưu token vào localStorage
+        localStorage.setItem("token", res.data.token);
+
+        // 2. Dispatch Redux lưu thông tin user
+        dispatch(doLogin(res.data));
+
+        // 3. Chuyển hướng đến trang home
         navigate("/login");
       } else {
         toast.error("Đăng ký thất bại!");
@@ -171,7 +181,9 @@ const SignUp = () => {
               </span>
             </div>
 
-            <label className={styles["sign-up__label"]}>Xác nhận mật khẩu</label>
+            <label className={styles["sign-up__label"]}>
+              Xác nhận mật khẩu
+            </label>
             <div className={styles["sign-up__password-wrapper"]}>
               <input
                 className={styles["sign-up__input"]}
@@ -182,9 +194,7 @@ const SignUp = () => {
               />
               <span
                 className={styles["sign-up__password-icon"]}
-                onClick={() =>
-                  setIsShowConfirmPassword(!isShowConfirmPassword)
-                }
+                onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)}
               >
                 {isShowConfirmPassword ? (
                   <VscEye className={styles["icons-eye"]} />
