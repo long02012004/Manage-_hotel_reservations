@@ -4,9 +4,19 @@ import { getRoomById } from "../../../services/AppService";
 import { resolveImageUrl } from "../../../utils/resolveImageUrl";
 import ModalBooking from "./ModalBooking";
 import styles from "./RoomDetail.module.scss";
+import RoomReviews from "./RoomReviews";
 import {
-  FaMapMarkerAlt, FaUsers, FaRulerCombined, FaBed, FaCity,
-  FaWifi, FaSnowflake, FaDog, FaSmokingBan, FaWind, FaRegClock,
+  FaMapMarkerAlt,
+  FaUsers,
+  FaRulerCombined,
+  FaBed,
+  FaCity,
+  FaWifi,
+  FaSnowflake,
+  FaDog,
+  FaSmokingBan,
+  FaWind,
+  FaRegClock,
 } from "react-icons/fa";
 
 // Adapter BE -> FE (hỗ trợ roomId/name, beds là chuỗi, thiếu image)
@@ -48,14 +58,30 @@ const RoomDetail = () => {
   const [loading, setLoading] = useState(true);
 
   const fmt = useMemo(
-    () => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }),
+    () =>
+      new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+        maximumFractionDigits: 0,
+      }),
     []
   );
 
   useEffect(() => {
     setLoading(true);
     getRoomById(id)
-      .then((res) => setRoom(toDetail(res.data ?? null, imageFromList)))
+      .then((res) => {
+        console.log("🔍 Dữ liệu BE trả về:", res.data);
+        const data = res.data ?? {};
+        // ✅ nếu BE không trả id, ta gán lại từ URL
+        const merged = { ...data, id };
+        setRoom(toDetail(merged, imageFromList));
+        console.log(
+          "✅ room sau khi chuẩn hoá:",
+          toDetail({ ...res.data, id }, imageFromList)
+        );
+      })
+
       .catch((err) => {
         console.error("Lỗi API:", err?.response?.status, err?.response?.data);
         setRoom(null);
@@ -81,7 +107,7 @@ const RoomDetail = () => {
   return (
     <div className={styles.roomDetail}>
       {/* Breadcrumb + tag nhỏ */}
-     {/*  <nav className={styles.breadcrumb}>
+      {/*  <nav className={styles.breadcrumb}>
         <Link to="/">Trang chủ</Link>
         <span>›</span>
         <Link to="/rooms">Phòng</Link>
@@ -98,14 +124,36 @@ const RoomDetail = () => {
           ) : (
             <span className={styles.badgeSoft}>Ưu đãi</span>
           )}
-          {room.amenities?.wifi && <span className={styles.pill}><FaWifi /> Wifi miễn phí</span>}
-          {room.amenities?.airConditioning && <span className={styles.pill}><FaSnowflake /> Máy lạnh</span>}
-          {room.amenities?.nonSmoking && <span className={styles.pill}><FaSmokingBan /> Không hút thuốc</span>}
-          {room.amenities?.hairDryer && <span className={styles.pill}><FaWind /> Máy sấy tóc</span>}
-          {room.amenities?.petsAllowed && <span className={styles.pill}><FaDog /> Thú cưng</span>}
+          {room.amenities?.wifi && (
+            <span className={styles.pill}>
+              <FaWifi /> Wifi miễn phí
+            </span>
+          )}
+          {room.amenities?.airConditioning && (
+            <span className={styles.pill}>
+              <FaSnowflake /> Máy lạnh
+            </span>
+          )}
+          {room.amenities?.nonSmoking && (
+            <span className={styles.pill}>
+              <FaSmokingBan /> Không hút thuốc
+            </span>
+          )}
+          {room.amenities?.hairDryer && (
+            <span className={styles.pill}>
+              <FaWind /> Máy sấy tóc
+            </span>
+          )}
+          {room.amenities?.petsAllowed && (
+            <span className={styles.pill}>
+              <FaDog /> Thú cưng
+            </span>
+          )}
         </div>
 
-        <p className={styles.address}><FaMapMarkerAlt /> {room.address}</p>
+        <p className={styles.address}>
+          <FaMapMarkerAlt /> {room.address}
+        </p>
         {room.description && <p className={styles.desc}>{room.description}</p>}
       </header>
 
@@ -121,29 +169,55 @@ const RoomDetail = () => {
 
       {/* Meta – chuyển thành card nhỏ đẹp */}
       <div className={styles.meta}>
-        <p><b><FaUsers /> Khách tối đa:</b> {room.guests}</p>
-        <p><b><FaRulerCombined /> Diện tích:</b> {room.size} m²</p>
-        <p><b><FaBed /> Giường:</b> {bedText}</p>
-        {room.view && <p><b><FaCity /> View:</b> {room.view}</p>}
+        <p>
+          <b>
+            <FaUsers /> Khách tối đa:
+          </b>{" "}
+          {room.guests}
+        </p>
+        <p>
+          <b>
+            <FaRulerCombined /> Diện tích:
+          </b>{" "}
+          {room.size} m²
+        </p>
+        <p>
+          <b>
+            <FaBed /> Giường:
+          </b>{" "}
+          {bedText}
+        </p>
+        {room.view && (
+          <p>
+            <b>
+              <FaCity /> View:
+            </b>{" "}
+            {room.view}
+          </p>
+        )}
         {room.rating && (
-          <p><b>Đánh giá:</b> {room.rating} ⭐ {room.reviews ? `(${room.reviews} lượt)` : ""}</p>
+          <p>
+            <b>Đánh giá:</b> {room.rating} ⭐{" "}
+            {room.reviews ? `(${room.reviews} lượt)` : ""}
+          </p>
         )}
       </div>
 
       {/* Giá + CTA */}
       <div className={styles.priceLine}>
         <b>{fmt.format(room.price)}</b>
-        {room.oldPrice && <span className={styles.oldPrice}>{fmt.format(room.oldPrice)}</span>}
-        {room.discount && <span className={styles.discount}>-{room.discount}%</span>}
+        {room.oldPrice && (
+          <span className={styles.oldPrice}>{fmt.format(room.oldPrice)}</span>
+        )}
+        {room.discount && (
+          <span className={styles.discount}>-{room.discount}%</span>
+        )}
         <span className={styles.perNight}>/ đêm</span>
       </div>
 
       <div className={styles.ctaRow}>
         <button className={styles.bookBtn} onClick={() => setShowModal(true)}>
           Đặt ngay
-        </button>
-        <button className={styles.secondaryBtn}>
-          <FaRegClock /> Giữ chỗ 15 phút
         </button>
       </div>
 
@@ -153,15 +227,43 @@ const RoomDetail = () => {
       <section className={styles.amenities}>
         <h3>Tiện nghi nổi bật</h3>
         <ul>
-          {room.amenities?.wifi && <li><FaWifi /> Wifi miễn phí</li>}
-          {room.amenities?.airConditioning && <li><FaSnowflake /> Máy lạnh</li>}
-          {room.amenities?.nonSmoking && <li><FaSmokingBan /> Không hút thuốc</li>}
-          {room.amenities?.hairDryer && <li><FaWind /> Máy sấy tóc</li>}
-          {room.amenities?.petsAllowed && <li><FaDog /> Thú cưng được phép</li>}
+          {room.amenities?.wifi && (
+            <li>
+              <FaWifi /> Wifi miễn phí
+            </li>
+          )}
+          {room.amenities?.airConditioning && (
+            <li>
+              <FaSnowflake /> Máy lạnh
+            </li>
+          )}
+          {room.amenities?.nonSmoking && (
+            <li>
+              <FaSmokingBan /> Không hút thuốc
+            </li>
+          )}
+          {room.amenities?.hairDryer && (
+            <li>
+              <FaWind /> Máy sấy tóc
+            </li>
+          )}
+          {room.amenities?.petsAllowed && (
+            <li>
+              <FaDog /> Thú cưng được phép
+            </li>
+          )}
         </ul>
       </section>
 
-      <ModalBooking show={showModal} onClose={() => setShowModal(false)} room={room} />
+      <ModalBooking
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        room={room}
+      />
+
+      <div className={styles.reviewsSection}>
+        <RoomReviews room={room} />
+      </div>
     </div>
   );
 };

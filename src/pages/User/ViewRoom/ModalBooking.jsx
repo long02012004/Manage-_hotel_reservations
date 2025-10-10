@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ModalBooking.module.scss";
+import { createBooking } from "../../../services/AppService";
 
 const ModalBooking = ({ show, onClose, room }) => {
   const [formData, setFormData] = useState({
@@ -8,20 +9,41 @@ const ModalBooking = ({ show, onClose, room }) => {
     phone: "",
     checkIn: "",
     checkOut: "",
-    guests: 1,
+    guests: 1, // số người mặc định
   });
+
   if (!show) return null;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Thông tin đặt phòng:", formData);
+  const handleSubmit = async (e) => {
+    console.log("room object:", room);
 
-    alert(`Đặt phòng thành công cho ${formData.name}!`);
-    onClose();
+    e.preventDefault();
+
+    // Dữ liệu gửi đúng format
+    const bookingData = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      checkinDate: formData.checkIn,
+      checkoutDate: formData.checkOut,
+      guests: parseInt(formData.guests), // thêm số người
+    };
+
+    try {
+      const res = await createBooking(room.id, bookingData); // ✅ truyền roomId đúng
+      console.log("Kết quả từ BE:", res.data);
+
+      alert(res.data.message || "Đặt phòng thành công!");
+      onClose();
+    } catch (error) {
+      console.error("Lỗi API:", error);
+      alert("Đặt phòng thất bại!");
+    }
   };
 
   return (
@@ -76,7 +98,9 @@ const ModalBooking = ({ show, onClose, room }) => {
             required
             className={styles.input}
           />
-          <label>Số khách:</label>
+
+          {/* 🧍‍♂️ Trường số khách */}
+          <label>Số người:</label>
           <input
             type="number"
             name="guests"

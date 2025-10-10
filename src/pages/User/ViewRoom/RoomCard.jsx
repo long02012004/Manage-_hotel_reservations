@@ -37,7 +37,7 @@ const RoomCard = ({
         {/* Truyền image & title sang trang chi tiết */}
         <Link to={`/viewroom/${id}`} state={{ image, title }}>
           <img
-            src={image}
+            src={image || null}
             alt={title}
             onError={() => console.warn("Ảnh lỗi:", image)}
           />

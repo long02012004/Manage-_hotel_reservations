@@ -51,3 +51,19 @@ export const toggleCustomerActive = (id, active) =>
 // API lấy danh sách đặt phòng chưa có
 export const getAllBookings = (params = { page: 0, limit: 10 }) =>
   axios.get("/bookings", { params });
+// API tạo đặt phòng
+export const createBooking = (roomId, data) =>
+  axios.post(`/bookings/${roomId}`, data);
+
+// Gửi đánh giá
+export const createReview = (roomId, data) =>
+  axios.post(`/reviews/${roomId}`, data);
+
+// Lấy tất cả đánh giá
+export const getAllReviews = (params = { page: 0, limit: 10 }) =>
+  axios.get("/staff/reviews/all-reviews", { params });
+// Lấy tất cả đánh giá của một phòng theo roomId
+export const getReviewsByRoomId = (roomId) => axios.get(`/reviews/${roomId}`);
+// Lấy danh sách giá phòng
+export const getAllPrices = (params = { page: 0, limit: 20 }) =>
+  axios.get("/staff/price", { params });
