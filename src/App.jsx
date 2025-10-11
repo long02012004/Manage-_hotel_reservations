@@ -4,6 +4,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "aos/dist/aos.css";
 import "animate.css/animate.min.css";
+import ScrollToTop from "./components/ScrollToTop";
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(1);
@@ -26,6 +28,7 @@ function App() {
   return (
     <>
       <Header isLoggedIn={isLoggedIn} role={role} />
+      <ScrollToTop /> {/* 👈 thêm dòng này ở đây */}
       <Outlet />
     </>
   );

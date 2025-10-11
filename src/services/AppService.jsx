@@ -24,7 +24,7 @@ export const updateStaff = (id, formData) =>
 export const deleteStaff = (id) => axios.delete(`/staff/users/${id}`);
 
 // API lấy danh sách phòng
-export const getRooms = (params = { page: 0, limit: 20 }) =>
+export const getRooms = (params = { page: 0, limit: 10 }) =>
   axios.get("/rooms", { params });
 // API xem chi tiết phòng lỗi ảnh
 export const getRoomById = (id) => axios.get(`/rooms/${id}`);
@@ -59,6 +59,9 @@ export const getAllBookings = (params = { page: 0, limit: 10 }) =>
 // API tạo đặt phòng
 export const createBooking = (roomId, data) =>
   axios.post(`/bookings/${roomId}`, data);
+// API tìm kiếm phòng (GET với query params)
+export const getSearchRooms = (params) =>
+  axios.get("/rooms/search", { params });
 
 // Gửi đánh giá
 export const createReview = (roomId, data) =>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./ModalBooking.module.scss";
 import { createBooking } from "../../../services/AppService";
+import { toast } from "react-toastify";
 
 const ModalBooking = ({ show, onClose, room }) => {
   const [formData, setFormData] = useState({
@@ -35,14 +36,14 @@ const ModalBooking = ({ show, onClose, room }) => {
     };
 
     try {
-      const res = await createBooking(room.id, bookingData); // ✅ truyền roomId đúng
+      const res = await createBooking(room.id, bookingData); 
       console.log("Kết quả từ BE:", res.data);
 
-      alert(res.data.message || "Đặt phòng thành công!");
+      toast.success(res.data.message || "Đặt phòng thành công!");
       onClose();
     } catch (error) {
       console.error("Lỗi API:", error);
-      alert("Đặt phòng thất bại!");
+      toast.error("Đặt phòng thất bại!");
     }
   };
 

@@ -1,12 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./RoomHeader.module.scss";
-/* import { postSearchRooms } from "../../../services/AppService";*/
+import { getSearchRooms } from "../../../services/AppService";
 import { toast } from "react-toastify";
-import { mockRooms } from "../../../services/mockRooms";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-import { useState } from "react";
 
 const RoomHeader = ({ setRooms }) => {
   const [date, setDate] = useState(new Date());
@@ -15,27 +12,31 @@ const RoomHeader = ({ setRooms }) => {
 
   const handleSearch = async () => {
     try {
-      // Dùng mock data thay vì gọi BE
-      let filtered = mockRooms;
-
-      // Lọc theo guests
-      filtered = filtered.filter((r) => r.guests >= Number(guests));
-
-      // Lọc theo priceRange
       const [min, max] = priceRange.split("-").map(Number);
-      filtered = filtered.filter((r) => {
-        const p = Number(r.price.replace(/\./g, ""));
-        if (max) return p >= min && p <= max;
-        return p >= min;
-      });
 
-      setRooms(filtered);
-      toast.success("Tìm kiếm thành công!");
-    } catch {
-      toast.error("Lỗi khi tìm kiếm phòng");
-      setRooms([]);
+      const params = {
+        page: 0,
+        limit: 10,
+        guests: Number(guests),
+        minPrice: min,
+        maxPrice: max || null,
+      };
+
+      const res = await getSearchRooms(params);
+
+      if (res?.data && Array.isArray(res.data)) {
+        setRooms(res.data);
+        toast.success("Tìm kiếm thành công!");
+      } else {
+        setRooms([]);
+        toast.error("Không tìm thấy phòng nào phù hợp!");
+      }
+    } catch (error) {
+      console.error("❌ Lỗi khi tìm kiếm phòng:", error);
+      toast.error("Đã xảy ra lỗi khi tìm kiếm phòng!");
     }
   };
+
   return (
     <div className={styles["header-wrapper"]}>
       <div className={styles["hotel-info"]}>
@@ -43,7 +44,7 @@ const RoomHeader = ({ setRooms }) => {
           Furama Hotel Danang Centre
         </button>
         <div className={styles["address"]}>
-          <p>178 Tran Phu, Phuoc Ninh Ward, Hai Chau District, Da Nang City</p>
+          <p>178 Trần Phú, Hải Châu, Đà Nẵng</p>
           <p>
             Email: <a>book.danangcentre@wink-hotels.com</a>
           </p>
@@ -52,6 +53,7 @@ const RoomHeader = ({ setRooms }) => {
       </div>
 
       <div className={styles["booking-box"]}>
+        {/* Ngày */}
         <div className={styles["input-box"]}>
           <label htmlFor="checkin">Check-in</label>
           <div className={styles["input-wrapper"]}>
@@ -60,44 +62,42 @@ const RoomHeader = ({ setRooms }) => {
               onChange={(d) => setDate(d)}
               dateFormat="dd/MM/yyyy"
               className={styles["date-picker"]}
-              id="checkin"
             />
             <span className={styles["calendar-icon"]}>📅</span>
           </div>
         </div>
-        {/*tìm theo số lượng người */}
+
+        {/* Số lượng người */}
         <div className={styles["input-box"]}>
-          <label htmlFor="guests">Số lượng người</label>
+          <label>Số lượng người</label>
           <select
-            id="guests"
-            className={styles["select-box"]}
             value={guests}
             onChange={(e) => setGuests(e.target.value)}
+            className={styles["select-box"]}
           >
-            <option value="1">Trống</option>
-            <option value="2">1 người</option>
-            <option value="3">2 người</option>
-            <option value="4">3 người</option>
-            <option value="5">4 người</option>
-            <option value="6">5 người</option>
+            <option value="1">1 người</option>
+            <option value="2">2 người</option>
+            <option value="3">3 người</option>
+            <option value="4">4 người</option>
           </select>
         </div>
 
-        {/* Tìm theo giá */}
+        {/* Giá */}
         <div className={styles["input-box"]}>
-          <label htmlFor="price">Tìm kiếm theo giá</label>
+          <label>Tìm kiếm theo giá</label>
           <select
-            id="price"
-            className={styles["select-box"]}
             value={priceRange}
             onChange={(e) => setPriceRange(e.target.value)}
+            className={styles["select-box"]}
           >
             <option value="0-500000">Dưới 500.000 VND</option>
             <option value="500000-1000000">500.000 - 1.000.000 VND</option>
             <option value="1000000-2000000">1.000.000 - 2.000.000 VND</option>
-            <option value="2000000">Trên 2.000.000 VND</option>
+            <option value="2000000-3500000">2.000.000 - 3.500.000 VND</option>
+            <option value="3500000">Trên 3.500.000 VND</option>
           </select>
         </div>
+
         <button className={styles["search-btn"]} onClick={handleSearch}>
           Tìm kiếm
         </button>

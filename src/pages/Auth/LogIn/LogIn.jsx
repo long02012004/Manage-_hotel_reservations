@@ -31,72 +31,51 @@ const LogIn = () => {
     setIsLoading(true);
 
     try {
-      console.log("🔹 Sending login request with:", { phone, password });
-
-      // 1. Login để lấy token
+      // 1️⃣ Gửi request đăng nhập
       const res = await postLogin({ phone_number: phone, password });
-      console.log("🔹 Login response:", res);
 
       if (res?.data && res.status === 200) {
         const { token } = res.data;
-        console.log("🔹 Received token:", token);
 
-        // Lưu token
+        // 2️⃣ Lưu token vào localStorage
         localStorage.setItem("token", token);
 
-        // 2. Gọi API lấy thông tin user hiện tại
-        // 2. Gọi API lấy thông tin user hiện tại
-        console.log("🔹 Fetching user details...");
-        const userRes = await getUserDetails(token); // truyền token
-        console.log("🔹 Full userRes:", userRes);
-
+        // 3️⃣ Lấy chi tiết user bằng token
+        const userRes = await getUserDetails(token);
         if (!userRes?.data) throw new Error("Không lấy được thông tin user");
 
-        const { fullname, roleId, phone_number } = userRes.data;
-        console.log(
-          "🔹 User fullname:",
-          fullname,
-          "RoleId:",
-          roleId,
-          "Phone:",
-          phone_number
-        );
+        const { id, fullname, roleId, phone_number } = userRes.data;
 
-        // 3. Lưu vào Redux
+        // 4️⃣ Lưu id vào localStorage (để dùng khi update)
+        localStorage.setItem("userId", id);
+
+        // 5️⃣ Lưu vào Redux
         dispatch(
           doLogin({
+            id,
             token,
             fullname,
             role_id: roleId,
-            phone_number, // nếu muốn lưu số điện thoại luôn
+            phone_number,
           })
         );
 
+        console.log("✅ User đăng nhập:", id, fullname, roleId, phone_number);
         toast.success("Đăng nhập thành công!");
 
-        // 4. Redirect dựa trên roleId
+        // 6️⃣ Điều hướng theo role
         const roleNumber = Number(roleId);
-
-        if (roleNumber === 3) {
-          navigate("/admins/dashboard"); // Admin
-        } else if (roleNumber === 2) {
-          navigate("/staff/rooms"); // Staff
-        } else {
-          navigate("/home"); // User thường → home
-        }
+        if (roleNumber === 3) navigate("/admins/dashboard");
+        else if (roleNumber === 2) navigate("/staff/rooms");
+        else navigate("/home");
       } else {
-        console.log("🔹 Login failed response:", res);
         toast.error(res?.data?.message || "Đăng nhập thất bại!");
       }
     } catch (err) {
       console.error("🔴 Login error:", err);
-
-      if (err.response) {
-        console.error("Status:", err.response.status);
-        console.error("Data:", err.response.data);
-      }
-
-      toast.error("Có lỗi xảy ra khi đăng nhập!");
+      toast.error(
+        err.response?.data?.message || "Có lỗi xảy ra khi đăng nhập!"
+      );
     } finally {
       setIsLoading(false);
     }

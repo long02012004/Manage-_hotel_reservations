@@ -62,25 +62,14 @@ const SignUp = () => {
     try {
       // Gửi đúng body BE yêu cầu
       let res = await postSignUp({
-        fullname: fullname,
+        fullname,
         phone_number,
-        email: email,
+        email,
         password,
         retype_password,
         role_id: 1,
       });
 
-      //       {
-      //   "fullname": "pham thang",
-      //   "phone_number": "0702389151",
-      //   "email": "admin@gmail.com",
-      //   "password": "123456",
-      //   "retype_password": "123456",
-      //   "date_of_birth": "1990-01-01",
-      //   "facebook_account_id": 0,
-      //   "google_account_id": 0,
-      //   "role_id": 2
-      // }
       if (res && res.status === 200) {
         toast.success("Đăng ký thành công!");
 
@@ -90,14 +79,21 @@ const SignUp = () => {
         // 2. Dispatch Redux lưu thông tin user
         dispatch(doLogin(res.data));
 
-        // 3. Chuyển hướng đến trang home
+        // 3. Chuyển hướng đến trang login
         navigate("/login");
       } else {
-        toast.error("Đăng ký thất bại!");
+        // Nếu BE trả về message lỗi
+        toast.error(res.data?.message || "Đăng ký thất bại!");
       }
     } catch (err) {
       console.error("Sign up error:", err);
-      toast.error("Có lỗi xảy ra khi đăng ký!");
+
+      // Nếu lỗi từ BE (ví dụ 400, 409...)
+      if (err.response && err.response.data && err.response.data.message) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Có lỗi xảy ra khi đăng ký!");
+      }
     }
   };
 

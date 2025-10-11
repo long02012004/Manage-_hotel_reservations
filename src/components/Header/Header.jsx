@@ -57,7 +57,7 @@ const Header = () => {
     <div className={styles["header-container"]}>
       <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
         <div className={styles.header__logo}>
-          <Link to="/home">
+          <Link to="/">
             <img
               src={logo}
               alt="Khách Sạn ABC"
@@ -104,9 +104,15 @@ const Header = () => {
               <span className={styles.nav__link} tabIndex={0}>
                 Tiếng Việt <i className="bx bx-chevron-down"></i>
                 <ul className={styles.nav__subnav}>
-                  <li><a href="#">Tiếng Anh</a></li>
-                  <li><a href="#">Tiếng Hàn</a></li>
-                  <li><a href="#">Tiếng Trung</a></li>
+                  <li>
+                    <a href="#">Tiếng Anh</a>
+                  </li>
+                  <li>
+                    <a href="#">Tiếng Hàn</a>
+                  </li>
+                  <li>
+                    <a href="#">Tiếng Trung</a>
+                  </li>
                 </ul>
               </span>
             </li>
@@ -119,7 +125,12 @@ const Header = () => {
                     <img
                       src={account.image || avatar_blog}
                       alt="Avatar"
-                      style={{ width: 30, height: 30, borderRadius: "50%", marginRight: 8 }}
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: "50%",
+                        marginRight: 8,
+                      }}
                     />
                     <span>{account.username}</span>
                   </Link>
@@ -131,7 +142,12 @@ const Header = () => {
                   <button
                     className={styles.nav__link}
                     onClick={handleLogout}
-                    style={{ background: "none", border: "none", cursor: "pointer" }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      marginBottom: "10px",
+                    }}
                   >
                     Đăng xuất
                   </button>
@@ -140,12 +156,18 @@ const Header = () => {
             ) : (
               <>
                 <li className={styles.nav__item}>
-                  <button className={styles.nav__btn} onClick={handleClickLogin}>
+                  <button
+                    className={styles.nav__btn}
+                    onClick={handleClickLogin}
+                  >
                     Đăng nhập
                   </button>
                 </li>
                 <li className={styles.nav__item}>
-                  <button className={styles.nav__btn} onClick={handleClickSignUp}>
+                  <button
+                    className={styles.nav__btn}
+                    onClick={handleClickSignUp}
+                  >
                     Đăng ký
                   </button>
                 </li>

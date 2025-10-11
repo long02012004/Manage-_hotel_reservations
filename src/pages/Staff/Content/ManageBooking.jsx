@@ -1,7 +1,6 @@
 // src/components/Booking/ManageBooking.jsx
 import { useState, useEffect } from "react";
 import { Card, Table, Button, Row, Col, Form, Badge } from "react-bootstrap";
-import { getAllBookings } from "../../../services/AppService"; // API bạn cần viết
 import { toast } from "react-toastify";
 
 const ManageBooking = () => {
@@ -13,14 +12,57 @@ const ManageBooking = () => {
     fetchBookings();
   }, []);
 
+  // ✅ Dữ liệu cứng (mock data)
+  const mockBookings = [
+    {
+      bookingId: 1,
+      customerName: "Nguyễn Văn A",
+      customerEmail: "vana@example.com",
+      roomName: "Phòng Deluxe View Biển",
+      bookingDate: "2025-10-01",
+      checkInDate: "2025-10-15",
+      status: "PENDING",
+    },
+    {
+      bookingId: 2,
+      customerName: "Trần Thị B",
+      customerEmail: "thib@example.com",
+      roomName: "Phòng Standard 2 Giường",
+      bookingDate: "2025-09-28",
+      checkInDate: "2025-10-10",
+      status: "CONFIRMED",
+    },
+    {
+      bookingId: 3,
+      customerName: "Lê Hoàng C",
+      customerEmail: "hoangc@example.com",
+      roomName: "Phòng Suite Hạng Sang",
+      bookingDate: "2025-10-03",
+      checkInDate: "2025-10-20",
+      status: "CANCELLED",
+    },
+    {
+      bookingId: 4,
+      customerName: "Phạm Thị D",
+      customerEmail: "thid@example.com",
+      roomName: "Phòng Gia Đình",
+      bookingDate: "2025-10-02",
+      checkInDate: "2025-10-12",
+      status: "PENDING",
+    },
+  ];
+
   const fetchBookings = async () => {
     try {
-      const res = await getAllBookings({ page: 0, limit: 20 });
-      setBookings(res.data);
-      setFiltered(res.data);
-      toast.success(" Lấy danh sách booking thành công");
+      // ✅ Giả lập delay API (1 giây)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setBookings(mockBookings);
+      setFiltered(mockBookings);
+
+      toast.success(" Lấy danh sách booking thành công!");
     } catch (err) {
-      toast.error(" Lỗi khi lấy danh sách booking:", err);
+      toast.error("❌ Lỗi khi lấy danh sách booking!");
     }
   };
 
@@ -77,6 +119,7 @@ const ManageBooking = () => {
             <tr>
               <th>#</th>
               <th>Khách hàng</th>
+              <th>Email</th>
               <th>Phòng</th>
               <th>Ngày đặt</th>
               <th>Ngày nhận</th>
@@ -89,6 +132,7 @@ const ManageBooking = () => {
               <tr key={b.bookingId}>
                 <td>{idx + 1}</td>
                 <td>{b.customerName}</td>
+                <td>{b.customerEmail}</td>
                 <td>{b.roomName}</td>
                 <td>{b.bookingDate}</td>
                 <td>{b.checkInDate}</td>
