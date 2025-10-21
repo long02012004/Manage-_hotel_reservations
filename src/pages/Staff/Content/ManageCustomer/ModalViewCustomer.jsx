@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import { getCustomerById } from "../../../services/AppService";
+import { getCustomerById } from "../../../../services/AppService";
 
 const ModalViewCustomer = ({ customerId, onClose }) => {
   const [customer, setCustomer] = useState(null);
@@ -32,12 +32,24 @@ const ModalViewCustomer = ({ customerId, onClose }) => {
       <Modal.Body>
         {customer ? (
           <div>
-            <p><b>ID:</b> {customer.customerId}</p>
-            <p><b>Tên:</b> {customer.name}</p>
-            <p><b>Email:</b> {customer.email}</p>
-            <p><b>SĐT:</b> {customer.phone}</p>
-            <p><b>Địa chỉ:</b> {customer.address}</p>
-            <p><b>Ghi chú:</b> {customer.note}</p>
+            <p>
+              <b>ID:</b> {customer.customerId}
+            </p>
+            <p>
+              <b>Tên:</b> {customer.name}
+            </p>
+            <p>
+              <b>Email:</b> {customer.email}
+            </p>
+            <p>
+              <b>SĐT:</b> {customer.phone}
+            </p>
+            <p>
+              <b>Địa chỉ:</b> {customer.address}
+            </p>
+            <p>
+              <b>Ghi chú:</b> {customer.note}
+            </p>
             <p>
               <b>Trạng thái:</b>{" "}
               {customer.active === 1 ? "Hoạt động" : "Đã khóa"}

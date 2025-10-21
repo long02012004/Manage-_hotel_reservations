@@ -32,7 +32,7 @@ const LogIn = () => {
 
     try {
       // 1️⃣ Gửi request đăng nhập
-      const res = await postLogin({ phone_number: phone, password });
+      const res = await postLogin(phone, password);
 
       if (res?.data && res.status === 200) {
         const { token } = res.data;
@@ -60,8 +60,7 @@ const LogIn = () => {
           })
         );
 
-        console.log("✅ User đăng nhập:", id, fullname, roleId, phone_number);
-        toast.success("Đăng nhập thành công!");
+        toast.success(res?.data?.message);
 
         // 6️⃣ Điều hướng theo role
         const roleNumber = Number(roleId);
@@ -72,10 +71,7 @@ const LogIn = () => {
         toast.error(res?.data?.message || "Đăng nhập thất bại!");
       }
     } catch (err) {
-      console.error("🔴 Login error:", err);
-      toast.error(
-        err.response?.data?.message || "Có lỗi xảy ra khi đăng nhập!"
-      );
+      toast.error(err.response?.data?.message);
     } finally {
       setIsLoading(false);
     }

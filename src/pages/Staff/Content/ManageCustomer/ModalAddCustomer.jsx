@@ -1,6 +1,6 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useState } from "react";
-import { createCustomer } from "../../../services/AppService";
+import { createCustomer } from "../../../../services/AppService";
 import { toast } from "react-toastify";
 
 const ModalAddCustomer = ({ onClose, onSave }) => {

@@ -25,6 +25,7 @@
     "gsap": "^3.13.0",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
+    "nprogress": "^0.2.0",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-chartjs-2": "^5.3.0",

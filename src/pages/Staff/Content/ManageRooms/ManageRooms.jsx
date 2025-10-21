@@ -4,7 +4,7 @@ import styles from "./ManageRooms.module.scss";
 import ModalAddRoom from "./ModalAddRoom";
 import ModalEditRoom from "./ModalEditRoom";
 import ModalViewRoom from "./ModalViewRoom";
-import { getRooms, deleteRoom } from "../../../services/AppService";
+import { getRooms, deleteRoom } from "../../../../services/AppService";
 import { toast } from "react-toastify";
 
 const ManageRooms = () => {

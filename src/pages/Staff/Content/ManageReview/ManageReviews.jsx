@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { GrHide } from "react-icons/gr";
 import ModalReply from "./ModalReply";
-import { getAllReviews } from "../../../services/AppService";
+import { getAllReviews } from "../../../../services/AppService";
 import styles from "./ManageReviews.module.scss";
 
 const ManageReviews = () => {

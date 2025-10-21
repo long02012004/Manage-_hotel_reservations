@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getAllPrices } from "../../../services/AppService";
+import { getAllPrices } from "../../../../services/AppService";
 import styles from "./ManagePrices.module.scss";
 
 // Chuyển tiền sang định dạng VND

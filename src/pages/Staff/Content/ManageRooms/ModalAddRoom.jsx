@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createRoom } from "../../../services/AppService";
+import { createRoom } from "../../../../services/AppService";
 import styles from "./ManageRooms.module.scss";
 import { toast } from "react-toastify";
 

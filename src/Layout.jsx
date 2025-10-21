@@ -21,12 +21,12 @@ import ManageStaff from "./pages/Admin/Content/ManageStaff.jsx";
 
 // Staff
 import StaffLayout from "./pages/Staff/StaffLayout.jsx";
-import ManageRooms from "./pages/Staff/Content/ManageRooms.jsx";
-import ManageReviews from "./pages/Staff/Content/ManageReviews.jsx";
-import ManageCustomers from "./pages/Staff/Content/ManageCustomers.jsx";
-import ManageContent from "./pages/Staff/Content/ManageContent.jsx";
-import ManagePrices from "./pages/Staff/Content/ManagePrices.jsx";
-import ManageBooking from "./pages/Staff/Content/ManageBooking.jsx";
+import ManageRooms from "./pages/Staff/Content/ManageRooms/ManageRooms.jsx";
+import ManageReviews from "./pages/Staff/Content/ManageReview/ManageReviews.jsx";
+import ManageCustomers from "./pages/Staff/Content/ManageCustomer/ManageCustomers.jsx";
+import ManageContent from "./pages/Staff/Content/ManageContent/ManageContent.jsx";
+import ManagePrices from "./pages/Staff/Content/ManagePrices/ManagePrices.jsx";
+import ManageBooking from "./pages/Staff/Content/ManageBooking/ManageBooking.jsx";
 
 // Toast
 import { ToastContainer, Bounce } from "react-toastify";
@@ -57,9 +57,18 @@ const Layout = () => {
 
         {/* ================= Admin Routes ================= */}
         <Route path="/admins" element={<AdminLayout />}>
+          {/* Route riêng của admin */}
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="manage-staff" element={<ManageStaff />} />
+
+          {/* ✅ Gộp thêm các route staff vào đây */}
+          <Route path="rooms" element={<ManageRooms />} />
+          <Route path="reviews" element={<ManageReviews />} />
+          <Route path="customers" element={<ManageCustomers />} />
+          <Route path="content" element={<ManageContent />} />
+          <Route path="prices" element={<ManagePrices />} />
+          <Route path="bookings" element={<ManageBooking />} />
         </Route>
 
         {/* ================= Staff Routes ================= */}

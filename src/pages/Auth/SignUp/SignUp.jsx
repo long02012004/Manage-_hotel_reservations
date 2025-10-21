@@ -11,9 +11,9 @@ import { doLogin } from "../../../redux/action/userAction";
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");
-  const [phone_number, setPhone] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [retype_password, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [isPolicyChecked, setIsPolicyChecked] = useState(false);
@@ -29,14 +29,14 @@ const SignUp = () => {
   };
 
   const validatePhone = (phone) => {
-    return /^(0|\+84)[0-9]{9,10}$/.test(phone); // Regex cho số điện thoại VN
+    return /^(0|\+84)[0-9]{9,10}$/.test(phone);
   };
 
   // Xử lý submit
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (!email || !phone_number || !password || !fullname) {
+    if (!email || !phone || !password || !fullname) {
       toast.error(
         "Vui lòng nhập đầy đủ Họ tên, Email, Số điện thoại và Mật khẩu!"
       );
@@ -46,11 +46,11 @@ const SignUp = () => {
       toast.error("Email không hợp lệ");
       return;
     }
-    if (!validatePhone(phone_number)) {
+    if (!validatePhone(phone)) {
       toast.error("Số điện thoại không hợp lệ");
       return;
     }
-    if (password !== retype_password) {
+    if (password !== confirmPassword) {
       toast.error("Mật khẩu xác nhận không khớp");
       return;
     }
@@ -61,17 +61,17 @@ const SignUp = () => {
 
     try {
       // Gửi đúng body BE yêu cầu
-      let res = await postSignUp({
+      let res = await postSignUp(
         fullname,
-        phone_number,
+        phone,
         email,
         password,
-        retype_password,
-        role_id: 1,
-      });
+        confirmPassword,
+        1
+      );
 
       if (res && res.status === 200) {
-        toast.success("Đăng ký thành công!");
+        toast.success(res.data.message);
 
         // 1. Lưu token vào localStorage
         localStorage.setItem("token", res.data.token);
@@ -83,7 +83,7 @@ const SignUp = () => {
         navigate("/login");
       } else {
         // Nếu BE trả về message lỗi
-        toast.error(res.data?.message || "Đăng ký thất bại!");
+        toast.error(res.data.message);
       }
     } catch (err) {
       console.error("Sign up error:", err);
@@ -152,7 +152,7 @@ const SignUp = () => {
               className={styles["sign-up__input"]}
               type="text"
               placeholder="Nhập số điện thoại"
-              value={phone_number}
+              value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
 
@@ -160,7 +160,7 @@ const SignUp = () => {
             <div className={styles["sign-up__password-wrapper"]}>
               <input
                 className={styles["sign-up__input"]}
-                type={isShowPassword ? "text" : "password"}
+                type="password"
                 placeholder="Nhập mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -183,9 +183,9 @@ const SignUp = () => {
             <div className={styles["sign-up__password-wrapper"]}>
               <input
                 className={styles["sign-up__input"]}
-                type={isShowConfirmPassword ? "text" : "password"}
+                type="password"
                 placeholder="Nhập lại mật khẩu"
-                value={retype_password}
+                value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <span
@@ -203,6 +203,10 @@ const SignUp = () => {
             <div className={styles["sign-up__checkbox"]}>
               <label className={styles["sign-up__checkbox-label"]}>
                 <input
+                  style={{
+                    transform: "scale(1.3)",
+                    cursor: "pointer",
+                  }}
                   type="checkbox"
                   checked={isPolicyChecked}
                   onChange={(e) => setIsPolicyChecked(e.target.checked)}
@@ -219,10 +223,14 @@ const SignUp = () => {
           </form>
 
           <p className={styles["sign-up__login-link"]}>
-            Đã có tài khoản?{" "}
-            <Link to="/login" className={styles["sign-up__login-link-anchor"]}>
+            Đã có tài khoản?
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/login")}
+              className={styles["sign-up__login-link-anchor"]}
+            >
               Đăng nhập
-            </Link>
+            </span>
           </p>
         </div>
       </div>

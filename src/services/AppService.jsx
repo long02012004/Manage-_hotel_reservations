@@ -1,11 +1,31 @@
 import axios from "../utils/AxiosCustomize.jsx";
 import instance from "../utils/AxiosCustomize.jsx"; // đường dẫn file instance
 
-// API đăng nhập
-export const postLogin = (data) => axios.post("/users/login", data);
-
-// API đăng ký
-export const postSignUp = (data) => axios.post("/users/register", data);
+// API đăng ký đã xong
+export const postSignUp = (
+  userName,
+  userPhone,
+  userEmail,
+  userPassword,
+  userRetypePassword,
+  userRole
+) => {
+  return axios.post("/users/register", {
+    fullname: userName,
+    phone_number: userPhone,
+    email: userEmail,
+    password: userPassword,
+    retype_password: userRetypePassword,
+    role_id: userRole,
+  });
+};
+// API đăng nhập đã xong
+export const postLogin = (userPhone, userPassword) => {
+  return axios.post("/users/login", {
+    phone_number: userPhone,
+    password: userPassword,
+  });
+};
 
 //api lấy danh sách nhân viên
 export const getAllStaff = (params = { page: 0, limit: 60 }) =>

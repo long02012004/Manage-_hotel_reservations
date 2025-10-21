@@ -6,7 +6,13 @@ import {
   FaHome,
   FaCog,
   FaSignOutAlt,
+  FaComments,
+  FaBed,
+  FaBlog,
+  FaTags,
 } from "react-icons/fa";
+import { TbBrandBooking } from "react-icons/tb";
+
 import styles from "./Sidebar.module.scss";
 import { logo } from "../../assets/images/img";
 
@@ -21,7 +27,36 @@ const Sidebar = () => {
       icon: <FaUsers />,
       label: "Quản lý nhân viên",
     },
-
+    {
+      path: "/admins/rooms",
+      icon: <FaBed />, // Quản lý phòng
+      label: "Quản lý phòng",
+    },
+    {
+      path: "/admins/reviews",
+      icon: <FaComments />, // Phản hồi đánh giá
+      label: "Phản hồi đánh giá",
+    },
+    {
+      path: "/admins/customers",
+      icon: <FaUsers />, // Quản lý tài khoản khách hàng
+      label: "Quản lý tài khoản khách hàng",
+    },
+    {
+      path: "/admins/content",
+      icon: <FaBlog />, // Quản lý Blog
+      label: "Quản lý Blog",
+    },
+    {
+      path: "/admins/prices",
+      icon: <FaTags />, // Giá & khuyến mãi
+      label: "Quản lý giá và khuyến mãi",
+    },
+    {
+      path: "/admins/bookings",
+      icon: <TbBrandBooking />, // Quản lý đặt phòng
+      label: "Quản lý đặt phòng",
+    },
     { path: "/admins/settings", icon: <FaCog />, label: "Cài đặt" },
   ];
 
@@ -32,7 +67,7 @@ const Sidebar = () => {
         <div className={styles.logoContainer}>
           <img src={logo} alt="Logo" className={styles.logoImg} />
         </div>
-      <div className={styles.logoTextContainer}>
+        <div className={styles.logoTextContainer}>
           {!collapsed && <span className={styles.logoText}>Admin Panel</span>}
           <button
             className={styles.toggleBtn}
@@ -40,7 +75,7 @@ const Sidebar = () => {
           >
             {collapsed ? "▶" : "◀"}
           </button>
-      </div>
+        </div>
       </div>
 
       {/* Menu */}

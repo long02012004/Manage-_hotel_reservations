@@ -5,7 +5,7 @@ import {
   getAllCustomers,
   deleteCustomer,
   toggleCustomerActive,
-} from "../../../services/AppService";
+} from "../../../../services/AppService";
 import ModalAddCustomer from "./ModalAddCustomer";
 import ModalViewCustomer from "./ModalViewCustomer";
 

@@ -1,4 +1,8 @@
 import axios from "axios";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+
+NProgress.configure({ showSpinner: false, trickleSpeed: 100 });
 
 // Đặt baseURL lấy từ .env để dễ đổi khi deploy
 const instance = axios.create({
@@ -12,6 +16,7 @@ instance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    NProgress.start();
     return config;
   },
   (error) => Promise.reject(error)
@@ -19,8 +24,13 @@ instance.interceptors.request.use(
 
 // (tuỳ chọn) xử lý lỗi tập trung
 instance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    NProgress.done(); // ✅ Dừng thanh tiến trình khi request thành công
+    return response;
+  },
+
   (error) => {
+    NProgress.done();
     if (error.response?.status === 401) {
       console.warn("Token hết hạn hoặc không hợp lệ");
       // có thể redirect về trang login

@@ -29,7 +29,7 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Render menu theo role
+  /*   // Render menu theo role
   const renderRoleMenu = () => {
     if (!account?.role) return null;
 
@@ -51,7 +51,7 @@ const Header = () => {
       );
     }
     return null; // user bình thường không có menu
-  };
+  }; */
 
   return (
     <div className={styles["header-container"]}>
@@ -136,7 +136,7 @@ const Header = () => {
                   </Link>
                 </li>
 
-                {renderRoleMenu()}
+                {/*  {renderRoleMenu()} */}
 
                 <li className={styles.nav__item}>
                   <button
