@@ -6,6 +6,7 @@ import ModalEditRoom from "./ModalEditRoom";
 import ModalViewRoom from "./ModalViewRoom";
 import { getRooms, deleteRoom } from "../../../../services/AppService";
 import { toast } from "react-toastify";
+import ReactPaginate from "react-paginate";
 
 const ManageRooms = () => {
   const [rooms, setRooms] = useState([]);
@@ -15,6 +16,10 @@ const ManageRooms = () => {
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
 
+  // 📌 Thêm state cho phân trang
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5;
+
   // 📌 Lấy danh sách phòng từ API
   useEffect(() => {
     fetchRooms();
@@ -22,10 +27,10 @@ const ManageRooms = () => {
 
   const fetchRooms = async () => {
     try {
-      const res = await getRooms({ page: 0, limit: 20 });
+      const res = await getRooms({ page: 0, limit: 100 });
       setRooms(res.data || []);
     } catch (err) {
-      toast.error(" Lỗi khi lấy danh sách phòng:", err);
+      toast.error("Lỗi khi lấy danh sách phòng:", err);
     }
   };
 
@@ -36,7 +41,7 @@ const ManageRooms = () => {
         fetchRooms(); // load lại danh sách sau khi xóa
         toast.success("Xóa phòng thành công!");
       } catch (err) {
-        toast.error(" Lỗi khi xóa phòng:", err);
+        toast.error("Lỗi khi xóa phòng:", err);
       }
     }
   };
@@ -46,6 +51,15 @@ const ManageRooms = () => {
   const filteredRooms = rooms.filter((r) =>
     r.title?.toLowerCase().includes(search.toLowerCase())
   );
+
+  // 📌 Tính toán phân trang
+  const offset = currentPage * itemsPerPage;
+  const currentItems = filteredRooms.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(filteredRooms.length / itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
 
   return (
     <div className={styles.manageRooms}>
@@ -69,7 +83,7 @@ const ManageRooms = () => {
       <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Tên phòng</th>
             <th>Số khách</th>
             <th>Giá</th>
@@ -78,9 +92,9 @@ const ManageRooms = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredRooms.map((r, idx) => (
+          {currentItems.map((r, idx) => (
             <tr key={r.id}>
-              <td>{idx + 1}</td>
+              <td>{offset + idx + 1}</td>
               <td>{r.title}</td>
               <td>{r.guests}</td>
               <td>{r.price?.toLocaleString()} VND</td>
@@ -120,6 +134,28 @@ const ManageRooms = () => {
           ))}
         </tbody>
       </Table>
+
+      {/* 📌 Phân trang ReactPaginate */}
+      <div className="d-flex justify-content-center mt-3">
+        <ReactPaginate
+          nextLabel="Next >"
+          previousLabel="< Prev"
+          breakLabel="..."
+          onPageChange={handlePageClick}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          containerClassName="pagination"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          activeClassName="active"
+          forcePage={currentPage}
+        />
+      </div>
 
       {/* Modal */}
       {showAdd && (

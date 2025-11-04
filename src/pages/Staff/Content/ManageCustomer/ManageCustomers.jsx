@@ -32,7 +32,7 @@ const CustomerManager = () => {
   const fetchCustomers = async () => {
     try {
       const res = await getAllCustomers();
-      setCustomers(res.data || []); // ✅ lấy mảng content
+      setCustomers(res.data || []); 
     } catch (err) {
       toast.error(" Lỗi khi lấy danh sách khách hàng");
     }

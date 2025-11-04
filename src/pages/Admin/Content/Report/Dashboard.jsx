@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import { Bar } from "react-chartjs-2";
 import { Card, Row, Col, Form, Table, Button } from "react-bootstrap";
-import { mockRooms } from "../../../services/mockRooms";
+import { mockRooms } from "../../../../services/mockRooms";
 
 /* Thư viện Excel */
 import * as XLSX from "xlsx";

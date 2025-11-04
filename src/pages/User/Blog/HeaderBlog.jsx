@@ -19,7 +19,7 @@ const HeaderBlog = () => {
               <NavLink to="/about">About</NavLink>
             </li>
             <li>
-              <NavLink to="/blog">Blog</NavLink>
+              <NavLink to="/blog-main">Blog</NavLink>
             </li>
             <li className={styles["icon-search"]}>
               <NavLink to="/search">

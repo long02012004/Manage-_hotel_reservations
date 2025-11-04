@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { createStaff } from "../../../services/AppService";
+import { createStaff } from "../../../../services/AppService";
 import { toast } from "react-toastify";
 
 const AddStaffModal = ({ show, onHide, onAdded }) => {

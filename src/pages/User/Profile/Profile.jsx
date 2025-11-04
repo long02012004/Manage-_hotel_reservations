@@ -8,8 +8,9 @@ const ProfilePage = () => {
   const [user, setUser] = useState({});
   const [form, setForm] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // 🔹 Lấy thông tin user từ API khi mở trang
+  // 🔹 Lấy thông tin user khi mở trang
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -19,8 +20,18 @@ const ProfilePage = () => {
       }
       try {
         const res = await getUserDetails(token);
+        console.log("📦 [Profile] User data:", res.data);
+
         setUser(res.data);
-        setForm(res.data);
+        setForm({
+          fullName: res.data.fullName || "",
+          phoneNumber: res.data.phoneNumber || "",
+          email: res.data.email || "",
+          address: res.data.address || "",
+          avatar: res.data.avatar || "",
+        });
+
+        localStorage.setItem("userId", res.data.userId);
       } catch (err) {
         console.error("❌ Lỗi khi tải user:", err);
         toast.error("Không thể tải thông tin người dùng!");
@@ -32,10 +43,18 @@ const ProfilePage = () => {
   // 🔹 Xử lý thay đổi input
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🔹 Cập nhật thông tin
+  // 🔹 Xử lý chọn ảnh mới
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm((prev) => ({ ...prev, avatar: file }));
+    }
+  };
+
+  // 🔹 Gửi dữ liệu cập nhật
   const handleSave = async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
@@ -44,21 +63,38 @@ const ProfilePage = () => {
     }
 
     const formData = new FormData();
-    formData.append("fullname", form.fullname || "");
-    formData.append("phone_number", form.phone_number || "");
-    formData.append("address", form.address || "");
+    formData.append("fullName", form.fullName || user.fullName || "");
+    formData.append("phoneNumber", form.phoneNumber || user.phoneNumber || "");
+    formData.append("email", form.email || user.email || "");
+    formData.append("address", form.address || user.address || "");
+    formData.append("roleId", user.roleId || 1);
+
     if (form.avatar instanceof File) {
-      formData.append("files", form.avatar);
+      formData.append("avatar", form.avatar);
+    }
+
+    console.log("📤 [Profile] Dữ liệu gửi lên:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`   ${key}:`, value);
     }
 
     try {
+      setLoading(true);
       const res = await updateStaff(userId, formData);
-      toast.success(" Cập nhật thông tin thành công!");
-      setUser(form);
+      console.log("✅ [Profile] Phản hồi từ server:", res);
+
+      toast.success("Cập nhật thông tin thành công!");
+      setUser({ ...user, ...form });
       setShowModal(false);
     } catch (err) {
-      console.error(" Lỗi khi cập nhật:", err);
-      toast.success("Cập nhật thành công!");
+      console.error("❌ [Profile] Lỗi khi cập nhật:", err);
+      if (err.response) {
+        console.error("🔸 Status:", err.response.status);
+        console.error("🔸 Data:", err.response.data);
+      }
+      toast.error("Cập nhật thất bại! Kiểm tra lại dữ liệu.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,9 +112,8 @@ const ProfilePage = () => {
             Chào mừng đến với <span>Khách Sạn Furama</span>
           </h1>
           <p>
-            Tọa lạc tại trung tâm thành phố, Khách Sạn Furama mang đến không
-            gian sang trọng, dịch vụ chuyên nghiệp và trải nghiệm nghỉ dưỡng
-            tuyệt vời.
+            Tọa lạc tại trung tâm thành phố, Khách Sạn Furama mang đến không gian
+            sang trọng, dịch vụ chuyên nghiệp và trải nghiệm nghỉ dưỡng tuyệt vời.
           </p>
           <button onClick={() => setShowModal(true)} className={styles.btn}>
             Thông tin cá nhân
@@ -90,12 +125,20 @@ const ProfilePage = () => {
             <span></span>
             <span></span>
             <div className={styles.image}>
-              <img src={user.avatar || avatar_blog} alt="avatar" />
+              <img
+                src={
+                  form.avatar instanceof File
+                    ? URL.createObjectURL(form.avatar)
+                    : user.avatar || avatar_blog
+                }
+                alt="avatar"
+              />
             </div>
           </div>
         </div>
       </div>
 
+      {/* 🔹 Modal cập nhật thông tin */}
       {showModal && (
         <div
           className={styles.modalOverlay}
@@ -107,13 +150,13 @@ const ProfilePage = () => {
                 src={
                   form.avatar instanceof File
                     ? URL.createObjectURL(form.avatar)
-                    : form.avatar || avatar_blog
+                    : user.avatar || avatar_blog
                 }
                 alt="Avatar"
                 className={styles.modalAvatar}
               />
               <h2>{form.fullName}</h2>
-              <p>{form.email}</p>
+              <p>{form.phoneNumber}</p>
             </div>
 
             <form className={styles.form}>
@@ -126,15 +169,7 @@ const ProfilePage = () => {
                   onChange={handleChange}
                 />
               </label>
-              <label>
-                Email
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email || ""}
-                  onChange={handleChange}
-                />
-              </label>
+
               <label>
                 Số điện thoại
                 <input
@@ -144,22 +179,42 @@ const ProfilePage = () => {
                   onChange={handleChange}
                 />
               </label>
+
+              <label>
+                Email
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email || ""}
+                  onChange={handleChange}
+                />
+              </label>
+
+              <label>
+                Địa chỉ
+                <input
+                  type="text"
+                  name="address"
+                  value={form.address || ""}
+                  onChange={handleChange}
+                />
+              </label>
+
               <label>
                 Ảnh đại diện
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) setForm({ ...form, avatar: file });
-                  }}
+                  onChange={handleAvatarChange}
                   className={styles.fileInput}
                 />
               </label>
             </form>
 
             <div className={styles.btnGroup}>
-              <button onClick={handleSave}>Lưu</button>
+              <button onClick={handleSave} disabled={loading}>
+                {loading ? "Đang lưu..." : "Lưu"}
+              </button>
               <button onClick={() => setShowModal(false)}>Đóng</button>
             </div>
           </div>

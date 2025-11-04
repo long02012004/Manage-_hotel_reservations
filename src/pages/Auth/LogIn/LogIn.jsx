@@ -33,6 +33,7 @@ const LogIn = () => {
     try {
       // 1️⃣ Gửi request đăng nhập
       const res = await postLogin(phone, password);
+      console.log("🔹 Kết quả trả về từ API login:", res.data);
 
       if (res?.data && res.status === 200) {
         const { token } = res.data;
@@ -42,6 +43,8 @@ const LogIn = () => {
 
         // 3️⃣ Lấy chi tiết user bằng token
         const userRes = await getUserDetails(token);
+        console.log("🔹 Thông tin chi tiết user:", userRes.data);
+
         if (!userRes?.data) throw new Error("Không lấy được thông tin user");
 
         const { id, fullname, roleId, phone_number } = userRes.data;

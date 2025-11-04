@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App.jsx";
 import Home from "./pages/User/Home/Home.jsx";
 import Blog from "./pages/User/Blog/BlogPage.jsx";
+import BlogMain from "./pages/User/Blog/BlogMain.jsx";
 import Offers from "./pages/User/Offers/OffersPage.jsx";
 import Food from "./pages/User/Food/Food.jsx";
 import Login from "./pages/Auth/LogIn/LogIn.jsx";
@@ -16,8 +17,8 @@ import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword.jsx";
 
 // Admin
 import AdminLayout from "./pages/Admin/AdminLayout.jsx";
-import Dashboard from "./pages/Admin/Content/Dashboard.jsx";
-import ManageStaff from "./pages/Admin/Content/ManageStaff.jsx";
+import Dashboard from "./pages/Admin/Content/Report/Dashboard.jsx";
+import ManageStaff from "./pages/Admin/Content/ManageStaff/ManageStaff.jsx";
 
 // Staff
 import StaffLayout from "./pages/Staff/StaffLayout.jsx";
@@ -86,6 +87,7 @@ const Layout = () => {
         <Route path="sign-up" element={<SignUp />} />
         <Route path="login" element={<Login />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="blog-main" element={<BlogMain />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

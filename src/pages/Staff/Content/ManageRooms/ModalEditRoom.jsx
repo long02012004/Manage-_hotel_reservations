@@ -1,242 +1,313 @@
-import { useState } from "react";
-import { Row, Col, Form, Button } from "react-bootstrap";
-import axios from "../../../../utils/AxiosCustomize"; // axios đã config token
-import styles from "./ManageRooms.module.scss";
+import { useState, useRef } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
+import Select from "react-select";
 import { toast } from "react-toastify";
+import { updateRoom } from "../../../../services/AppService"; // <-- API cập nhật phòng
+import "./ModalAllRoom.scss";
+
+const optionsView = [
+  { value: "Sea view", label: "Sea view" },
+  { value: "Garden view", label: "Garden view" },
+  { value: "City view", label: "City view" },
+];
 
 const ModalEditRoom = ({ room, onClose, onUpdated }) => {
-  const [edited, setEdited] = useState({ ...room });
-  const [preview, setPreview] = useState(room.image || null);
-  const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [editedRoom, setEditedRoom] = useState({
+    name: room.name || "",
+    title: room.title || "",
+    address: room.address || "",
+    description: room.description || "",
+    guests: room.guests || "",
+    size: room.size || "",
+    beds: room.beds || "",
+    view: room.view ? { value: room.view, label: room.view } : null,
+    price: room.price || "",
+    oldPrice: room.oldPrice || "",
+    discount: room.discount || "",
+    airConditioning: room.airConditioning || false,
+    wifi: room.wifi || false,
+    hairDryer: room.hairDryer || false,
+    petsAllowed: room.petsAllowed || false,
+    nonSmoking: room.nonSmoking || false,
+  });
+  const [file, setFile] = useState(null);
+  const fileInputRef = useRef();
 
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-
-    if (type === "checkbox") {
-      setEdited({ ...edited, [name]: checked });
-    } else if (name === "files" && files && files[0]) {
-      setEdited({ ...edited, files: files[0] });
-      setPreview(URL.createObjectURL(files[0]));
-    } else {
-      setEdited({ ...edited, [name]: value });
-    }
+    const { name, value, type, checked } = e.target;
+    setEditedRoom((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = () => {
+    if (!editedRoom.name || !editedRoom.price) {
+      toast.error("Tên phòng và giá không được để trống!");
+      return;
+    }
+    setShowConfirm(true);
+  };
+
+  const handleConfirmSave = async () => {
+    const formData = new FormData();
+    formData.append("name", editedRoom.name);
+    formData.append("title", editedRoom.title);
+    formData.append("address", editedRoom.address);
+    formData.append("description", editedRoom.description);
+    formData.append("guests", editedRoom.guests);
+    formData.append("size", editedRoom.size);
+    formData.append("beds", editedRoom.beds);
+    formData.append("view", editedRoom.view?.value || "");
+    formData.append("price", editedRoom.price);
+    formData.append("oldPrice", editedRoom.oldPrice);
+    formData.append("discount", editedRoom.discount);
+    formData.append("airConditioning", editedRoom.airConditioning ? "true" : "false");
+    formData.append("wifi", editedRoom.wifi ? "true" : "false");
+    formData.append("hairDryer", editedRoom.hairDryer ? "true" : "false");
+    formData.append("petsAllowed", editedRoom.petsAllowed ? "true" : "false");
+    formData.append("nonSmoking", editedRoom.nonSmoking ? "true" : "false");
+    if (file) formData.append("files", file);
 
     try {
-      const formData = new FormData();
-
-      // String fields
-      ["title", "description", "address", "view", "beds", "name"].forEach(
-        (field) => formData.append(field, edited[field] || "")
-      );
-
-      // Number fields
-      ["price", "oldPrice", "guests", "size", "discount"].forEach((field) =>
-        formData.append(field, edited[field]?.toString() || "0")
-      );
-
-      // Boolean fields
-      [
-        "airConditioning",
-        "wifi",
-        "hairDryer",
-        "petsAllowed",
-        "nonSmoking",
-      ].forEach((field) =>
-        formData.append(field, edited[field] ? "true" : "false")
-      );
-
-      // File
-      if (edited.files) formData.append("files", edited.files);
-
-      console.log("🚀 FormData entries:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-      const res = await axios.put(`/staff/rooms/${room.id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      console.log("✅ Update response:", res.data);
+      await updateRoom(room.id, formData);
       toast.success("Cập nhật phòng thành công!");
-      onUpdated(); // gọi reload table
+      if (onUpdated) onUpdated();
       onClose();
     } catch (err) {
-      console.error("❌ Lỗi khi cập nhật phòng:", err);
-      toast.error("Lỗi khi cập nhật phòng! Xem console để biết chi tiết.");
+      console.error("Lỗi cập nhật phòng:", err);
+      toast.error("Cập nhật phòng thất bại!");
     } finally {
-      setLoading(false);
+      setShowConfirm(false);
     }
   };
 
   return (
-    <div className={styles.modal} centered size="xl">
-      <div className={styles.modalContent}>
-        <h3 className="mb-3">✏️ Sửa Phòng</h3>
+    <>
+      {/* Modal chính chứa form sửa phòng */}
+      <Modal show onHide={onClose} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>✏️ Chỉnh sửa thông tin phòng</Modal.Title>
+        </Modal.Header>
 
-        <Form onSubmit={handleSubmit}>
-          {/* Các field text/number/checkbox như cũ */}
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Tiêu đề
-            </Form.Label>
-            <Col sm={9}>
+        <Modal.Body>
+          <fieldset className="border rounded-3 p-3">
+            <legend className="float-none w-auto px-3">Thông tin phòng</legend>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Tên phòng</Form.Label>
               <Form.Control
-                name="title"
-                value={edited.title || ""}
+                type="text"
+                name="name"
+                value={editedRoom.name}
                 onChange={handleChange}
               />
-            </Col>
-          </Form.Group>
+            </Form.Group>
 
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Mô tả
-            </Form.Label>
-            <Col sm={9}>
+            <Form.Group className="mb-3">
+              <Form.Label>Tiêu đề</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                value={editedRoom.title}
+                onChange={handleChange}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Địa chỉ</Form.Label>
+              <Form.Control
+                type="text"
+                name="address"
+                value={editedRoom.address}
+                onChange={handleChange}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Mô tả</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={2}
+                rows={3}
                 name="description"
-                value={edited.description || ""}
+                value={editedRoom.description}
                 onChange={handleChange}
               />
-            </Col>
-          </Form.Group>
+            </Form.Group>
 
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Số khách
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="number"
-                name="guests"
-                value={edited.guests || ""}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
+            {/* Dòng chứa số lượng người, kích cỡ và giường */}
+            <div className="row mb-3">
+              <div className="col">
+                <Form.Label>Số lượng người</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="guests"
+                  value={editedRoom.guests}
+                  onChange={handleChange}
+                  min={1}
+                />
+              </div>
+              <div className="col">
+                <Form.Label>Kích cỡ phòng (m²)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="size"
+                  value={editedRoom.size}
+                  onChange={handleChange}
+                  min={1}
+                />
+              </div>
+              <div className="col">
+                <Form.Label>Giường (beds)</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="beds"
+                  value={editedRoom.beds}
+                  onChange={handleChange}
+                  placeholder="Ví dụ: 1 king, 2 twin..."
+                />
+              </div>
+            </div>
 
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Giá hiện tại
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="number"
-                name="price"
-                value={edited.price || ""}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
+            {/* Dòng giá, giá cũ, giảm giá */}
+            <div className="row mb-3">
+              <div className="col">
+                <Form.Label>Giá (₫)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="price"
+                  value={editedRoom.price}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col">
+                <Form.Label>Giá cũ (₫)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="oldPrice"
+                  value={editedRoom.oldPrice}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col">
+                <Form.Label>Giảm giá (%)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="discount"
+                  value={editedRoom.discount}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
 
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Giảm giá (%)
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="number"
-                name="discount"
-                value={edited.discount || ""}
-                onChange={handleChange}
+            <div className="mb-3">
+              <Select
+                options={optionsView}
+                placeholder="Chọn view..."
+                value={editedRoom.view}
+                onChange={(val) => setEditedRoom((p) => ({ ...p, view: val }))}
               />
-            </Col>
-          </Form.Group>
+            </div>
 
-          {/* Checkbox */}
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Tiện nghi
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Check
-                type="checkbox"
-                label="Điều hòa"
-                name="airConditioning"
-                checked={edited.airConditioning || false}
-                onChange={handleChange}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Wifi"
-                name="wifi"
-                checked={edited.wifi || false}
-                onChange={handleChange}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Máy sấy tóc"
-                name="hairDryer"
-                checked={edited.hairDryer || false}
-                onChange={handleChange}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Cho phép thú cưng"
-                name="petsAllowed"
-                checked={edited.petsAllowed || false}
-                onChange={handleChange}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Không hút thuốc"
-                name="nonSmoking"
-                checked={edited.nonSmoking || false}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
+            {/* Tiện ích */}
+            <div className="form-check mt-3 d-flex gap-5 flex-wrap">
+              <label className="form-check-label">
+                <input
+                  type="checkbox"
+                  name="wifi"
+                  checked={editedRoom.wifi}
+                  onChange={handleChange}
+                  className="form-check-input me-1"
+                />
+                Wifi
+              </label>
 
-          {/* File */}
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Ảnh phòng
-            </Form.Label>
-            <Col sm={9}>
+              <label className="form-check-label">
+                <input
+                  type="checkbox"
+                  name="airConditioning"
+                  checked={editedRoom.airConditioning}
+                  onChange={handleChange}
+                  className="form-check-input me-1"
+                />
+                Điều hòa
+              </label>
+
+              <label className="form-check-label">
+                <input
+                  type="checkbox"
+                  name="hairDryer"
+                  checked={editedRoom.hairDryer}
+                  onChange={handleChange}
+                  className="form-check-input me-1"
+                />
+                Máy sấy tóc
+              </label>
+
+              <label className="form-check-label">
+                <input
+                  type="checkbox"
+                  name="petsAllowed"
+                  checked={editedRoom.petsAllowed}
+                  onChange={handleChange}
+                  className="form-check-input me-1"
+                />
+                Cho phép thú cưng
+              </label>
+
+              <label className="form-check-label">
+                <input
+                  type="checkbox"
+                  name="nonSmoking"
+                  checked={editedRoom.nonSmoking}
+                  onChange={handleChange}
+                  className="form-check-input me-1"
+                />
+                Không hút thuốc
+              </label>
+            </div>
+
+            {/* Upload ảnh */}
+            <div className="mt-3">
+              <Form.Label>Upload ảnh phòng</Form.Label>
               <Form.Control
                 type="file"
-                name="files"
-                accept="image/*"
-                onChange={handleChange}
+                onChange={(e) => setFile(e.target.files[0])}
+                ref={fileInputRef}
               />
-              {preview && (
-                <img
-                  src={preview}
-                  alt="preview"
-                  style={{
-                    maxWidth: "200px",
-                    borderRadius: "8px",
-                    marginTop: "8px",
-                  }}
-                />
-              )}
-            </Col>
-          </Form.Group>
+            </div>
+          </fieldset>
+        </Modal.Body>
 
-          <div className={styles.actions + " mt-3"}>
-            <Button type="submit" variant="primary" disabled={loading}>
-              Cập nhật
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={onClose}
-              className="ms-2"
-            >
-              Hủy
-            </Button>
-          </div>
-        </Form>
-      </div>
-    </div>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onClose}>
+            Hủy
+          </Button>
+          <Button variant="warning" onClick={handleSubmit}>
+            Lưu
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal xác nhận cập nhật */}
+      <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận cập nhật</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Bạn có chắc chắn muốn <b>cập nhật</b> thông tin phòng này không?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+            Hủy
+          </Button>
+          <Button variant="success" onClick={handleConfirmSave}>
+            Đồng ý
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

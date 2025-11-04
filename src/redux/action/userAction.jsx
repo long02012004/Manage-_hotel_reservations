@@ -8,7 +8,7 @@ export const doLogin = (payload) => {
   };
 
   const mappedData = {
-    username: payload.fullname,
+    username: payload.fullname || "",
     access_token: payload.token,
     refresh_token: payload.refresh_token || "",
     image: payload.image || "",

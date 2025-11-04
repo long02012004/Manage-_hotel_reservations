@@ -3,7 +3,7 @@ import { Card, Table, Button, Row, Col, Form } from "react-bootstrap";
 import AddStaffModal from "./AddStaffModal";
 import EditStaffModal from "./EditStaffModal";
 import ViewStaffModal from "./ViewStaffModal";
-import { getAllStaff, deleteStaff } from "../../../services/AppService";
+import { getAllStaff, deleteStaff } from "../../../../services/AppService";
 import { toast } from "react-toastify";
 
 const ManageStaff = () => {
@@ -23,11 +23,19 @@ const ManageStaff = () => {
 
   const fetchStaff = async () => {
     try {
-      const res = await getAllStaff({ page: 0, limit: 60 });
+      let res = await getAllStaff({ page: 0, limit: 10 });
       setStaffList(res.data);
       setSearchResult(res.data);
+      toast.success("Lấy danh sách nhân viên thành công")
     } catch (err) {
-      console.error("Lỗi khi lấy danh sách staff:", err);
+      if (err.response && err.response.data) {
+        const message =
+          err.response.data.message || "Lỗi server không xác định!";
+        toast.error(message); // ✅ Hiển thị message từ BE
+      } else {
+        toast.error("Không thể kết nối đến server!");
+      }
+      console.error("API Error:", err.response?.data || err);
     }
   };
 
@@ -85,7 +93,7 @@ const ManageStaff = () => {
         >
           <thead className="table-dark">
             <tr>
-              <th>#</th>
+              <th>ID</th>
               <th>Họ tên</th>
               <th>Email</th>
               <th>SĐT</th>

@@ -64,3 +64,25 @@
   background: #6c757d;
   color: white;
 }
+.pagination {
+  list-style: none;
+  display: flex;
+  gap: 6px;
+}
+
+.page-link {
+  color: #0d6efd;
+  border: 1px solid #dee2e6;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.page-link:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.active .page-link {
+  background-color: #0d6efd;
+  color: white;
+}

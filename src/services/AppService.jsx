@@ -28,7 +28,7 @@ export const postLogin = (userPhone, userPassword) => {
 };
 
 //api lấy danh sách nhân viên
-export const getAllStaff = (params = { page: 0, limit: 60 }) =>
+export const getAllStaff = (params = { page: 0, limit: 10 }) =>
   axios.get("/admins/users/all-staff", { params });
 // API tạo nhân viên
 export const createStaff = (formData) =>
